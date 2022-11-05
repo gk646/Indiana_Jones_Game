@@ -222,7 +222,7 @@ public class IndianaJones {
 
 
         /*while (!gameLogic.gameIsWon) {
-            numberofsnakes--;
+            numberofsnake
             tickspeed += 25;
             gameLogic = new GameLogic(lines, columns, tickspeed, numberofsnakes);
             gameLogic.gameLoop();
