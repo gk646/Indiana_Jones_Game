@@ -3,13 +3,10 @@ package indianajones.gamelogic;
 import indianajones.bin.IndianaJones;
 import indianajones.gamepieces.*;
 
-import javax.lang.model.type.NullType;
-import java.awt.*;
 import java.nio.charset.StandardCharsets;
 
 public class GameLogic {
     private int lines;
-    public boolean gameIsWon;
     public GameView gameView;
     public IndianaJones indianaJones;
     private int columns;
@@ -138,8 +135,8 @@ public class GameLogic {
         int wave2 = 0;
         int counter1 = 0;
         while (!this.gameOver) {
-            if ( timegone> 450){
-                this.gameOver= true;
+            if (timegone > 450) {
+                this.gameOver = true;
                 indianaJones.jonesWon = true;
             }
             this.canvas.fill(' ');
@@ -162,10 +159,10 @@ public class GameLogic {
                     snakes[counter1].line = wave2;
                     snakes[counter1].column = 47;
                     wave1++;
-                    if(counter1< length-1) {
+                    if (counter1 < length - 1) {
                         counter1++;
-                    }else{
-                        counter1=0;
+                    } else {
+                        counter1 = 0;
                     }
                 }
             }

@@ -25,8 +25,4 @@ public class GamePiece {
     protected int getColumn() {
         return column;
     }
-
-    protected char getDisplay() {
-        return display;
-    }
 }

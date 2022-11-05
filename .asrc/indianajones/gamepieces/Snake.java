@@ -1,10 +1,5 @@
 package indianajones.gamepieces;
 
-import indianajones.gamelogic.GameView;
-
-import javax.management.openmbean.OpenMBeanAttributeInfo;
-import java.awt.event.KeyEvent;
-
 public class Snake extends GamePiece {
     protected Jones jones;
 
