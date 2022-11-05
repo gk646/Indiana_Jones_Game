@@ -183,7 +183,7 @@ public class IndianaJones {
             }
             //Level 2 / The Car Chase
             else if (indianaJones.levelSelector == 12) {
-                startScreen.setWindowTitle("Indiana Jones - \"Level Selection\"");
+                startScreen.setWindowTitle("Indiana Jones - \"The Chase\"");
                 indianaJones.jonesWon = false;
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0){
                     GameLogic carChase = new GameLogic(lines, columns, tickspeed, 0, startScreen, indianaJones);
