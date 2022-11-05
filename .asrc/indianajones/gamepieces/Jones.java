@@ -22,6 +22,7 @@ public class Jones extends GamePiece {
 
     @Override
     public void move() {
+        //todo escape menu
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
             if (keyCode == KeyEvent.VK_W) {
@@ -45,7 +46,7 @@ public class Jones extends GamePiece {
             } else if(keyCode == KeyEvent.VK_D){
                 for(int keycode: pressedKeys){
                     if (keycode == KeyEvent.VK_SPACE && powerUpEnabled) {
-                        column += 4;
+                        column += 5;
                     }
                 }
             }if (keyCode == KeyEvent.VK_D) {

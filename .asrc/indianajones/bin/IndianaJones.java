@@ -1,7 +1,9 @@
 package indianajones.bin;
+
 import indianajones.gamelogic.GameLogic;
 import indianajones.gamelogic.GameView;
 import indianajones.gamepieces.Snake;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
@@ -137,7 +139,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = -1;
+        indianaJones.levelSelector = 2;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -145,7 +147,9 @@ public class IndianaJones {
         int numberofsnakes = 25;
         int tickspeed = 100;
         boolean gameFinish = false;
+
         //Making Window
+        //todo transition screens
         GameView startScreen = new GameView();
 
         while (!gameFinish) {
@@ -154,24 +158,26 @@ public class IndianaJones {
                 indianaJones.startScreen(lines, startScreen, indianaJones);
             }
             // Level select
+            //todo descriptions texts / level description
             if (indianaJones.levelSelector == 0) {
                 GameLogic levelSelectScreen = new GameLogic(lines, columns, 100, 0, startScreen, indianaJones);
+                startScreen.setWindowTitle("Indiana Jones - \"Level Selection\"");
                 indianaJones.setupLevelSelectScreen(levelSelectScreen, lines, columns);
                 indianaJones.lifes = 3;
                 levelSelectScreen.gameLoopLevelSelect();
             }
             //Level 1 / The Warehouse
             else if (indianaJones.levelSelector == 1) {
-                startScreen.setWindowTitle("Indiana Jones - \"Level Selection\"");
                 indianaJones.jonesWon = false;
+                startScreen.setWindowTitle("Indiana Jones - \"The Warehouse\"");
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic level1 = new GameLogic(lines, columns, tickspeed, 30, startScreen, indianaJones);
                     level1.level1();
-                    startScreen.setWindowTitle("Indiana Jones - \"The Warehouse\"");
                     indianaJones.setObstaclesforGamePieces(level1);
                     level1.grail.line = 13;
                     level1.grail.column = 24;
                     level1.gameLoop();
+                    //todo flashing screen when hit
                     if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                         indianaJones.snakeWon = false;
                         indianaJones.levelSelector = 0;
@@ -183,12 +189,14 @@ public class IndianaJones {
             }
             //Level 2 / The Car Chase
             else if (indianaJones.levelSelector == 12) {
-                startScreen.setWindowTitle("Indiana Jones - \"The Chase\"");
+                startScreen.setWindowTitle("Indiana Jones - \"The Standoff\"");
                 indianaJones.jonesWon = false;
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic carChase = new GameLogic(lines, columns, tickspeed, 0, startScreen, indianaJones);
 
                     carChase.gameLoopCarChase();
+                    // todo proper end scene  all snakes go off screen you get grail
+                    //todo snake line on column 45
                     if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                         indianaJones.snakeWon = false;
                         indianaJones.levelSelector = 0;
@@ -198,15 +206,25 @@ public class IndianaJones {
                     }
                 }
             }
-
-            // Level 2 / Random Levels
-
+            // Level 2 / Random Levels//todo random levels
             else if (indianaJones.levelSelector == 2) {
-                gameFinish = true;
-                System.exit(1);
+                startScreen.setWindowTitle("Indiana Jones - \"Random Level \"");
+                while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
+                    GameLogic randomlevel = new GameLogic(lines, columns, tickspeed, 30, startScreen, indianaJones);
+                    randomlevel.fillArrayRandom();
+                    indianaJones.setObstaclesforGamePieces(randomlevel);
+                    randomlevel.gameLoop();
+                    //todo flashing screen when hit
+                    if (indianaJones.snakeWon && indianaJones.lifes < 1) {
+                        indianaJones.snakeWon = false;
+                        indianaJones.levelSelector = 0;
+                    }
+                    if (indianaJones.jonesWon) {
+                        indianaJones.levelSelector = 0;
+                    }
+                }
             }
             //Exit
-
             else if (indianaJones.levelSelector == 3) {
                 gameFinish = true;
                 //Checkpoints
@@ -218,25 +236,3 @@ public class IndianaJones {
         startScreen.closeGameView(true);
     }
 }
-
-
-
-        /*while (!gameLogic.gameIsWon) {
-            numberofsnake
-            tickspeed += 25;
-            gameLogic = new GameLogic(lines, columns, tickspeed, numberofsnakes);
-            gameLogic.gameLoop();
-            gameLogic.obstacles[0]= new Obstacle(10,15);
-            gameLogic.gameView.closeGameView(false);
-        }
-        GameView endScreen = new GameView();
-        for (int i = 4; i >= 0; i--) {
-            endScreen.print("Du hast gewonnen\n"
-                    + "Der Tickspeed war am Ende: " + tickspeed + "\n"
-                    + "Die Schlangezahl war am Ende: " + numberofsnakes
-                    + "\nDein Score ist: "+((100*numberofsnakes+250+10000)-tickspeed*10)
-                    + "\n\nFenster schließt in " + i + " Sekunden...", 22);
-            gameLogic.sleep(1000);
-        }
-
-        System.exit(1);*/
