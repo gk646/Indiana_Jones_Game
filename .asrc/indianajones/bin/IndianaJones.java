@@ -1,10 +1,10 @@
 package indianajones.bin;
-
 import indianajones.gamelogic.GameLogic;
 import indianajones.gamelogic.GameView;
 import indianajones.gamepieces.Snake;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+
 
 public class IndianaJones {
     public int levelSelector;
@@ -172,11 +172,11 @@ public class IndianaJones {
                     level1.grail.line = 13;
                     level1.grail.column = 24;
                     level1.gameLoop();
-                    if (indianaJones.snakeWon && indianaJones.lifes<1) {
+                    if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                         indianaJones.snakeWon = false;
-                        indianaJones.levelSelector=0;
+                        indianaJones.levelSelector = 0;
                     }
-                    if(indianaJones.jonesWon){
+                    if (indianaJones.jonesWon) {
                         indianaJones.levelSelector = 12;
                     }
                 }
@@ -185,15 +185,15 @@ public class IndianaJones {
             else if (indianaJones.levelSelector == 12) {
                 startScreen.setWindowTitle("Indiana Jones - \"The Chase\"");
                 indianaJones.jonesWon = false;
-                while (!indianaJones.jonesWon && indianaJones.lifes > 0){
+                while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic carChase = new GameLogic(lines, columns, tickspeed, 0, startScreen, indianaJones);
 
                     carChase.gameLoopCarChase();
-                    if (indianaJones.snakeWon && indianaJones.lifes<1) {
+                    if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                         indianaJones.snakeWon = false;
-                        indianaJones.levelSelector=0;
+                        indianaJones.levelSelector = 0;
                     }
-                    if(indianaJones.jonesWon){
+                    if (indianaJones.jonesWon) {
                         indianaJones.levelSelector = 0;
                     }
                 }
@@ -209,7 +209,7 @@ public class IndianaJones {
 
             else if (indianaJones.levelSelector == 3) {
                 gameFinish = true;
-            //Checkpoints
+                //Checkpoints
 
             } else if (indianaJones.levelSelector == 4) {
                 gameFinish = true;
