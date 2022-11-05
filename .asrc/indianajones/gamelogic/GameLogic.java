@@ -4,9 +4,11 @@ import indianajones.bin.IndianaJones;
 import indianajones.gamepieces.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class GameLogic {
     private int lines;
+    public int seed;
     public GameView gameView;
     public IndianaJones indianaJones;
     private int columns;
@@ -21,6 +23,7 @@ public class GameLogic {
     private int numberOfSnakes;
     public Snake snake;
     boolean gameOver;
+    public Random random;
 
     public GameLogic(int lines, int columns, int tickspeed, int numberOfSnakes, GameView gameView, IndianaJones indianaJones) {
         this.lines = lines;
@@ -29,7 +32,9 @@ public class GameLogic {
         this.canvas = new Canvas(lines, columns);
         obstacles = new Obstacle[lines * columns];
         this.numberOfSnakes = numberOfSnakes;
+        this.random = new Random(seed);
         this.gameView = gameView;
+        this.seed = 0;
         this.snake = new Snake(lines, columns, jones);
         this.tickspeed = tickspeed;
         this.exit = new Exit(lines, columns);
@@ -280,7 +285,21 @@ public class GameLogic {
             }
         }
     }
-
+    public void fillArrayRandom(){
+        seed = (int) (Math.random()*4000);
+        double randomNumber = random.nextDouble();
+        int filler = 0;
+        int [][]array = new int[27][48];
+        for (int i = 0; i < 27; i++) {
+            for (int b = 0; b < 48; b++) {
+                array[i][b] = ((seed*1000)/((i+1)*(b+1))%2);
+                System.out.println(array[i][b]);
+                if (array[i][b] == 1) {
+                    obstacles[filler++] = new Obstacle(i,b);
+                }
+            }
+        }
+    }
     public void level1() {
         // @formatter:off
         int[][] lvl1 = {
