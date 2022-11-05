@@ -39,7 +39,7 @@ public class GameLogic {
         this.tickspeed = tickspeed;
         this.exit = new Exit(lines, columns);
         this.grail = new Grail(lines, columns);
-        this.jones = new Jones(lines, columns, gameView);
+        this.jones = new Jones(lines, columns, gameView,indianaJones, canvas);
         this.gamePieces = new GamePiece[3 + numberOfSnakes];
         this.snakes = new Snake[numberOfSnakes];
         for (int i = 0; i < this.snakes.length; i++) {

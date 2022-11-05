@@ -1,5 +1,7 @@
 package indianajones.gamepieces;
 
+import indianajones.bin.IndianaJones;
+import indianajones.gamelogic.Canvas;
 import indianajones.gamelogic.GameView;
 
 import java.awt.event.KeyEvent;
@@ -7,14 +9,18 @@ import java.awt.event.KeyEvent;
 public class Jones extends GamePiece {
     public boolean powerUpEnabled;
     public boolean gotGrail;
+    public Canvas canvas;
+    public IndianaJones indianaJones;
     private GameView gameView;
     public Obstacle[] obstacles;
 
-    public Jones(int lines, int columns, GameView gameView) {
+    public Jones(int lines, int columns, GameView gameView,IndianaJones indianaJones, Canvas canvas) {
         super(lines, columns);
         this.obstacles = new Obstacle[lines * columns];
         this.gameView = gameView;
         this.display = 'J';
+        this.canvas = canvas;
+        this.indianaJones = indianaJones;
         this.line = (lines / 2);
         this.powerUpEnabled = false;
         this.column = 0;
@@ -25,6 +31,9 @@ public class Jones extends GamePiece {
         //todo escape menu
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
+            if(keyCode == KeyEvent.VK_ESCAPE){
+                canvas.fill(' ');
+            }
             if (keyCode == KeyEvent.VK_W) {
                 if (line - 1 < 0 || jonesAgainstObstacleUp()) {
                     line = line;
