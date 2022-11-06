@@ -4,8 +4,18 @@ import indianajones.gamelogic.GameLogic;
 import indianajones.gamelogic.GameView;
 import indianajones.gamepieces.Snake;
 
+import java.io.File;  // Import the File class
+import java.io.FileNotFoundException;
+import java.io.IOException;  // Import the IOException class to handle errors
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+
+import static java.nio.file.StandardOpenOption.APPEND;
 
 
 public class IndianaJones {
@@ -136,10 +146,10 @@ public class IndianaJones {
         gameLogic.exit.column = 46;
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 1;
+        indianaJones.levelSelector = 0;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -147,6 +157,36 @@ public class IndianaJones {
         int numberofsnakes = 25;
         int tickspeed = 100;
         boolean gameFinish = false;
+        boolean checkpoint1 = false;
+        boolean checkpoint2 = false;
+        boolean checkpoint3 = false;
+        boolean checkpoint4 = false;
+        Path path = Paths.get("checkpoint.txt");
+        File checkpointtxt = new File("checkpoint.txt");
+        if (checkpointtxt.exists()) {
+            System.out.println("exist");
+            Scanner reader = new Scanner(checkpointtxt);
+            while (reader.hasNextLine()) {
+                String checkpointdata = reader.nextLine();
+                if (checkpointdata.contains("1")) {
+                    checkpoint1 = true;
+                } else if (checkpointdata.contains("2")) {
+                    checkpoint2 = true;
+                } else if (checkpointdata.contains("3")) {
+                    checkpoint3 = true;
+                } else if (checkpointdata.contains("4")) {
+                    checkpoint4 = true;
+                }
+            }
+        } else {
+            String standartText = ("""
+                    This is the .txt for the Indiana Jones Game.
+                    Please keep it in the same directory as the game file (.jar)
+                    You have reached the following checkpoints:\s""");
+            byte[] strToBytes = standartText.getBytes();
+            Files.write(path, strToBytes);
+
+        }
 
         //Making Window
         //todo transition screens
@@ -183,11 +223,14 @@ public class IndianaJones {
                         indianaJones.levelSelector = 0;
                     }
                     if (indianaJones.jonesWon) {
+                        if (!checkpoint1) {
+                            Files.writeString(path, "\nYou have reached Checkpoint 1!", APPEND);
+                        }
                         indianaJones.levelSelector = 12;
                     }
                 }
             }
-            //Level 2 / The Car Chase
+            //Level 1.1 / "The Standoff"
             else if (indianaJones.levelSelector == 12) {
                 startScreen.setWindowTitle("Indiana Jones - \"The Standoff\"");
                 indianaJones.jonesWon = false;
@@ -202,16 +245,20 @@ public class IndianaJones {
                         indianaJones.levelSelector = 0;
                     }
                     if (indianaJones.jonesWon) {
+                        if (!checkpoint2) {
+                            Files.writeString(path, "\nYou have reached Checkpoint 2!", APPEND);
+                        }
+
                         indianaJones.levelSelector = 0;
                     }
                 }
             }
-            // Level 2 / Random Levels//todo random levels
+            // Level 2 / Random Levels//todo make random levels playable
             else if (indianaJones.levelSelector == 2) {
-                startScreen.setWindowTitle("Indiana Jones - \"Random Level \"");
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic randomlevel = new GameLogic(lines, columns, tickspeed, 30, startScreen, indianaJones);
                     randomlevel.fillArrayRandom();
+                    startScreen.setWindowTitle("Indiana Jones - \"Random Level " + randomlevel.seed + "\"");
                     indianaJones.setObstaclesforGamePieces(randomlevel);
                     randomlevel.gameLoop();
                     //todo flashing screen when hit
@@ -227,6 +274,7 @@ public class IndianaJones {
             //Exit
             else if (indianaJones.levelSelector == 3) {
                 gameFinish = true;
+
                 //Checkpoints
 
             } else if (indianaJones.levelSelector == 4) {

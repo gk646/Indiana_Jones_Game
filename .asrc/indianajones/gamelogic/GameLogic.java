@@ -111,36 +111,38 @@ public class GameLogic {
         }
 
     }
+    public void escapeMenu() throws InterruptedException {
+        Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
+        for (int keyCode : pressedKeys) {
+            if (keyCode == KeyEvent.VK_ESCAPE) {
+                boolean stop = false;
+                while (!stop) {
+                    //todo maybe flashing yes and no my / switch a and d confirm with enter
+                    gameView.addTextToCanvas("\n".repeat(2)+" ".repeat(14)+"Do you wanna quit?", 0, 0, 20, Color.green, 0);
+                    gameView.printCanvas();
+                    Thread.sleep(125);
+                    Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
+                    for (int keypress : pressedKeys1) {
+                        if (keypress == KeyEvent.VK_ENTER) {
+                            gameOver = true;
+                            indianaJones.lifes=0;
+                            indianaJones.snakeWon = true;
+                            indianaJones.levelSelector = 0;
+                            stop = true;
 
+                        }else if(keypress == KeyEvent.VK_ESCAPE){
+                            stop = true;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
     public void gameLoop() throws InterruptedException {
         while (!this.gameOver) {
             this.canvas.fill(' ');
-            Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
-            for (int keyCode : pressedKeys) {
-                if (keyCode == KeyEvent.VK_ESCAPE) {
-                    boolean stop = false;
-                    while (!stop) {
-                        //todo maybe flashing yes and no my / switch a and d confirm with enter
-                        gameView.addTextToCanvas("\n".repeat(2)+" ".repeat(14)+"Do you wanna quit?", 0, 0, 20, Color.green, 0);
-                        gameView.printCanvas();
-                        Thread.sleep(125);
-                        Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
-                        for (int keypress : pressedKeys1) {
-                            if (keypress == KeyEvent.VK_ENTER) {
-                                gameOver = true;
-                                indianaJones.lifes=0;
-                                indianaJones.snakeWon = true;
-                                indianaJones.levelSelector = 0;
-                                stop = true;
-
-                            }else if(keypress == KeyEvent.VK_ESCAPE){
-                                stop = true;
-                            }
-                        }
-
-                    }
-                }
-            }
+            escapeMenu();
             for (GamePiece gamePiece : gamePieces) {
                 gamePiece.move();
                 canvas.paint(gamePiece.line, gamePiece.column, gamePiece.display);
@@ -158,7 +160,7 @@ public class GameLogic {
         sleep(500);
     }
 
-    public void gameLoopCarChase() {
+    public void gameLoopCarChase() throws InterruptedException {
         int timegone = 0;
         int length = 75;
         this.snakes = new Snake[length];
@@ -169,7 +171,7 @@ public class GameLogic {
 
         while (!this.gameOver) {
 
-
+            escapeMenu();
             if (timegone > 450) {
                 this.gameOver = true;
                 indianaJones.jonesWon = true;
@@ -222,6 +224,7 @@ public class GameLogic {
             sleep(120 - timegone / 10);
             timegone++;
         }
+        //todo proper transition screens
         sleep(500);
     }
 
