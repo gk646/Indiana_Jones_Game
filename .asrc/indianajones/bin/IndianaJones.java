@@ -139,7 +139,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 2;
+        indianaJones.levelSelector = 1;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;

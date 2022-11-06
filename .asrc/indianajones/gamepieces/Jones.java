@@ -2,6 +2,7 @@ package indianajones.gamepieces;
 
 import indianajones.bin.IndianaJones;
 import indianajones.gamelogic.Canvas;
+import indianajones.gamelogic.GameLogic;
 import indianajones.gamelogic.GameView;
 
 import java.awt.event.KeyEvent;
@@ -31,9 +32,6 @@ public class Jones extends GamePiece {
         //todo escape menu
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
-            if(keyCode == KeyEvent.VK_ESCAPE){
-                canvas.fill(' ');
-            }
             if (keyCode == KeyEvent.VK_W) {
                 if (line - 1 < 0 || jonesAgainstObstacleUp()) {
                     line = line;
