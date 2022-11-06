@@ -21,6 +21,11 @@ import static java.nio.file.StandardOpenOption.APPEND;
 public class IndianaJones {
     public int levelSelector;
     public boolean snakeWon;
+    static boolean gameFinish = false;
+    public boolean checkpoint1 = false;
+    public boolean checkpoint2 = false;
+    public boolean checkpoint3 = false;
+    public boolean checkpoint4 = false;
     public boolean jonesWon;
     public int lifes;
 
@@ -149,33 +154,28 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 0;
+        indianaJones.levelSelector = -1;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
         int columns = 48;
         int numberofsnakes = 25;
         int tickspeed = 100;
-        boolean gameFinish = false;
-        boolean checkpoint1 = false;
-        boolean checkpoint2 = false;
-        boolean checkpoint3 = false;
-        boolean checkpoint4 = false;
+
         Path path = Paths.get("checkpoint.txt");
         File checkpointtxt = new File("checkpoint.txt");
         if (checkpointtxt.exists()) {
-            System.out.println("exist");
             Scanner reader = new Scanner(checkpointtxt);
             while (reader.hasNextLine()) {
                 String checkpointdata = reader.nextLine();
                 if (checkpointdata.contains("1")) {
-                    checkpoint1 = true;
+                    indianaJones.checkpoint1 = true;
                 } else if (checkpointdata.contains("2")) {
-                    checkpoint2 = true;
+                    indianaJones.checkpoint2 = true;
                 } else if (checkpointdata.contains("3")) {
-                    checkpoint3 = true;
+                    indianaJones.checkpoint3 = true;
                 } else if (checkpointdata.contains("4")) {
-                    checkpoint4 = true;
+                    indianaJones.checkpoint4 = true;
                 }
             }
         } else {
@@ -223,7 +223,7 @@ public class IndianaJones {
                         indianaJones.levelSelector = 0;
                     }
                     if (indianaJones.jonesWon) {
-                        if (!checkpoint1) {
+                        if (!indianaJones.checkpoint1) {
                             Files.writeString(path, "\nYou have reached Checkpoint 1!", APPEND);
                         }
                         indianaJones.levelSelector = 12;
@@ -245,7 +245,7 @@ public class IndianaJones {
                         indianaJones.levelSelector = 0;
                     }
                     if (indianaJones.jonesWon) {
-                        if (!checkpoint2) {
+                        if (!indianaJones.checkpoint2) {
                             Files.writeString(path, "\nYou have reached Checkpoint 2!", APPEND);
                         }
 
@@ -253,7 +253,8 @@ public class IndianaJones {
                     }
                 }
             }
-            // Level 2 / Random Levels//todo make random levels playable
+            // Level 2 / Random Levels
+            // todo make random levels playable
             else if (indianaJones.levelSelector == 2) {
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic randomlevel = new GameLogic(lines, columns, tickspeed, 30, startScreen, indianaJones);
@@ -278,7 +279,9 @@ public class IndianaJones {
                 //Checkpoints
 
             } else if (indianaJones.levelSelector == 4) {
-                gameFinish = true;
+                if(indianaJones.checkpoint1){
+                    indianaJones.levelSelector=12;
+                }
             }
         }
         startScreen.closeGameView(true);
