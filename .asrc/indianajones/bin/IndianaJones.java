@@ -220,6 +220,7 @@ public class IndianaJones {
         //todo transition screens
         GameView screen = new GameView();
         while (!gameFinish) {
+            System.out.println(indianaJones.levelSelector);
             //StartScreen-----handled in method startScreen()
             if (indianaJones.levelSelector == -1) {
                 indianaJones.startScreen(lines, screen, indianaJones);
@@ -310,8 +311,9 @@ public class IndianaJones {
                 }
             }
             // Level 2 / Random Levels
-            // todo make random levels more fun
             else if (indianaJones.levelSelector == 2) {
+                indianaJones.jonesWon=false;
+                indianaJones.lifes = 3;
                 int seed = (int) (Math.random() * 4000);
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic randomlevel = new GameLogic(lines, columns, tickspeed, 5, screen, indianaJones);
@@ -322,9 +324,11 @@ public class IndianaJones {
                     //todo flashing screen when hit
                     if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                         indianaJones.snakeWon = false;
+                        randomlevel.grail.display= '\u269A';
                         indianaJones.levelSelector = 0;
                     }
                     if (indianaJones.jonesWon) {
+                        indianaJones.lifes=3;
                         indianaJones.levelSelector = 0;
                     }
                 }
@@ -335,7 +339,9 @@ public class IndianaJones {
 
                 //Checkpoints
                 //todo correct if structure
-            } else if (indianaJones.levelSelector == 4) {
+            }
+
+            else if (indianaJones.levelSelector == 4) {
                 System.out.println("g");
                 if (indianaJones.checkpoint1) {
                     indianaJones.levelSelector = 12;
