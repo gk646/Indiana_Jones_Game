@@ -18,7 +18,7 @@ public class Jones extends GamePiece {
         super(lines, columns);
         this.obstacles = new Obstacle[lines * columns];
         this.gameView = gameView;
-        this.display = 'J';
+        this.display = '\u24BF';
         this.canvas = canvas;
         this.indianaJones = indianaJones;
         this.line = (lines / 2);
@@ -30,7 +30,10 @@ public class Jones extends GamePiece {
     public void move() {
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
-            if (keyCode == KeyEvent.VK_W) {
+            if (keyCode == KeyEvent.VK_SPACE && powerUpEnabled) {
+                column += 5;
+            }
+            else if (keyCode == KeyEvent.VK_W) {
                 if (line - 1 < 0 || jonesAgainstObstacleUp()) {
                 } else {
                     line -= 1;
@@ -44,12 +47,6 @@ public class Jones extends GamePiece {
                 if (column - 1 < 0 || jonesAgainstObstacleLeft()) {
                 } else {
                     column -= 1;
-                }
-            } else if(keyCode == KeyEvent.VK_D){
-                for(int keycode: pressedKeys){
-                    if (keycode == KeyEvent.VK_SPACE && powerUpEnabled) {
-                        column += 5;
-                    }
                 }
             }if (keyCode == KeyEvent.VK_D) {
                 if (column + 1 > columns - 1 || jonesAgainstObstacleRight()) {
