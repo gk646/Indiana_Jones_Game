@@ -219,7 +219,6 @@ public class IndianaJones {
         //Making Window
         //todo transition screens
         GameView screen = new GameView();
-
         while (!gameFinish) {
             //StartScreen-----handled in method startScreen()
             if (indianaJones.levelSelector == -1) {
@@ -270,10 +269,13 @@ public class IndianaJones {
             else if (indianaJones.levelSelector == 12) {
                 screen.setWindowTitle("Indiana Jones - \"The Standoff\"");
                 indianaJones.jonesWon = false;
+
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic carChase = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
-
-                    carChase.gameLoopCarChase();
+                    carChase.grail.invisible();
+                    carChase.grail.line=0;
+                    carChase.grail.column= 46;
+                    carChase.gameLoopStandoff();
                     // todo proper end scene  all snakes go off screen you get grail
                     //todo snake line on column 45
                     if (indianaJones.snakeWon && indianaJones.lifes < 1) {
@@ -285,9 +287,17 @@ public class IndianaJones {
                         if (!indianaJones.checkpoint2) {
                             Files.writeString(path, "\nYou have reached Checkpoint 2!", APPEND);
                         }
-                        indianaJones.levelSelector = 0;
+                        indianaJones.levelSelector = 13;
                     }
                 }
+            }
+            //Level 1.2 / "The Town"
+            else if(indianaJones.levelSelector == 13){
+                screen.setWindowTitle("Indiana Jones - \"The Town\"");
+                GameLogic town = new GameLogic(lines,columns,tickspeed,0,screen,indianaJones);
+
+                town.gameLoop();
+
             }
             // Level 2 / Random Levels
             // todo make random levels more fun

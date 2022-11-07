@@ -91,11 +91,11 @@ public class GameLogic {
             gameView.playSound("pickup.wav",false);
 
         } else if (this.jones.gotGrail && jonesIsOnTheSameSpotAs(this.exit)) {
-            gameView.print(canvas.asString(), 20);
+            gameView.print(canvas.asString(), 22);
             indianaJones.jonesWon = true;
             this.gameOver = true;
         } else if (snakeGotJones()) {
-            gameView.print(canvas.asString(), 20);
+            gameView.print(canvas.asString(), 22);
             indianaJones.snakeWon = true;
             this.gameOver = true;
             if (indianaJones.lifes >= 2) {
@@ -159,15 +159,15 @@ public class GameLogic {
                 }
             }
             printHearts();
-            gameView.print(canvas.asString(), 20);
+            gameView.print(canvas.asString(), 22);
             gameLogic();
             sleep(tickspeed);
         }
         sleep(500);
     }
 
-    public void gameLoopCarChase() throws InterruptedException {
-        int timegone = 0;
+    public void gameLoopStandoff() throws InterruptedException {
+        int timegone = 400;
         int length = 75;
         this.snakes = new Snake[length];
         int arraylength = 0;
@@ -176,19 +176,35 @@ public class GameLogic {
         int counter1 = 0;
 
         while (!this.gameOver) {
-
-            escapeMenu();
-            if (timegone > 450) {
-                this.gameOver = true;
-                indianaJones.jonesWon = true;
-            }
             this.canvas.fill(' ');
+            escapeMenu();
+            if (timegone >= 450) {
 
-            if (arraylength < length) {
+                if(jones.gotGrail){
+                    grail.invisible();
+                }else {
+                    grail.line = 13;
+                    grail.column = 40;
+                    grail.display = '\u269A';
+                }
+                for(Snake snake: snakes){
+                    if(snake != null && snake.column <=2) {
+                        snake.display = ' ';
+                        snake.line = 0;
+                        snake.column = 46;
+                    }else if(snake!=null&&snake.column<46){
+                        canvas.paint(snake.line,snake.column,snake.display);
+                        snake.moveHorizontal();
+                    }else if (snake!= null && snake.line!=0){
+                        snake.line=0;
+                    }
+                }
+            }
+            if (arraylength < 75) {
                 snakes[arraylength] = new Snake((int) (Math.random() * 27), 47, jones);
                 arraylength++;
             }
-            if (timegone > 250) {
+            if (timegone > 250 && timegone<450) {
                 jones.powerUpEnabled = true;
                 if (snakes[counter1] != null) {
                     if (wave1 <= 26) {
@@ -202,20 +218,22 @@ public class GameLogic {
                     snakes[counter1].line = wave2;
                     snakes[counter1].column = 47;
                     wave1++;
-                    if (counter1 < length - 1) {
+                    if (counter1 < 75 - 1) {
                         counter1++;
                     } else {
                         counter1 = 0;
                     }
                 }
             }
-            for (Snake snake : snakes) {
-                if (snake != null && snake.column > 0) {
-                    snake.moveHorizontal();
-                    canvas.paint(snake.line, snake.column, snake.display);
-                } else if (snake != null && snake.column == 0) {
-                    snake.column = 47;
-                    snake.line = (int) (Math.random() * 27);
+            if(timegone<450) {
+                for (Snake snake : snakes) {
+                    if (snake != null && snake.column > 0) {
+                        snake.moveHorizontal();
+                        canvas.paint(snake.line, snake.column, snake.display);
+                    } else if (snake != null && snake.column == 0) {
+                        snake.column = 47;
+                        snake.line = (int) (Math.random() * 27);
+                    }
                 }
             }
             for (GamePiece gamePiece : gamePieces) {
@@ -225,7 +243,7 @@ public class GameLogic {
                 }
             }
             printHearts();
-            gameView.print(canvas.asString(), 20);
+            gameView.print(canvas.asString(), 22);
             gameLogic();
             sleep(120 - timegone / 10);
             timegone++;
@@ -300,7 +318,7 @@ public class GameLogic {
                 }
             }
             paintLevelSelectText();
-            gameView.print(canvas.asString(), 20);
+            gameView.print(canvas.asString(), 22);
             gameLogic();
             if (jones.line == storyexit1.line && jones.column == storyexit1.column) {
                 indianaJones.levelSelector = 1;
