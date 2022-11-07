@@ -176,11 +176,11 @@ public class GameLogic {
         int wave1 = 0;
         int wave2 = 0;
         int counter1 = 0;
-
+        gameView.playSound("bumblebeekorsakov.wav",false);
         while (!this.gameOver) {
             this.canvas.fill(' ');
             escapeMenu();
-            if (timegone >= 450) {
+            if (timegone >= 550) {
 
                 if(jones.gotGrail){
                     grail.invisible();
@@ -206,7 +206,7 @@ public class GameLogic {
                 snakes[arraylength] = new Snake((int) (Math.random() * 27), 47, jones);
                 arraylength++;
             }
-            if (timegone > 250 && timegone<450) {
+            if (timegone > 300 && timegone<550) {
                 jones.powerUpEnabled = true;
                 if (snakes[counter1] != null) {
                     if (wave1 <= 26) {
@@ -227,7 +227,7 @@ public class GameLogic {
                     }
                 }
             }
-            if(timegone<450) {
+            if(timegone<550) {
                 for (Snake snake : snakes) {
                     if (snake != null && snake.column > 0) {
                         snake.moveHorizontal();
@@ -247,11 +247,12 @@ public class GameLogic {
             printHearts();
             gameView.print(canvas.asString(), 22);
             gameLogic();
-            sleep(120 - timegone / 10);
+            sleep(120 - timegone / 15);
             timegone++;
         }
         //todo proper transition screens
         sleep(500);
+        gameView.stopAllSounds();
         jones.powerUpEnabled = false;
     }
 
