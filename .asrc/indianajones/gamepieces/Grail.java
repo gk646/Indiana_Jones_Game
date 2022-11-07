@@ -1,5 +1,7 @@
 package indianajones.gamepieces;
 
+import indianajones.gamelogic.GameView;
+
 public class Grail extends GamePiece {
 
     public Grail(int lines, int columns) {
@@ -12,6 +14,7 @@ public class Grail extends GamePiece {
 
     public void invisible() {
         this.display = ' ';
+
     }
 
 }

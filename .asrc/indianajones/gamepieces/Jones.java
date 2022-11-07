@@ -19,7 +19,7 @@ public class Jones extends GamePiece {
         super(lines, columns);
         this.obstacles = new Obstacle[lines * columns];
         this.gameView = gameView;
-        this.display = 'J';
+        this.display = '\u24BF';
         this.canvas = canvas;
         this.indianaJones = indianaJones;
         this.line = (lines / 2);
@@ -29,7 +29,6 @@ public class Jones extends GamePiece {
 
     @Override
     public void move() {
-        //todo escape menu
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
             if (keyCode == KeyEvent.VK_W) {

@@ -1,5 +1,7 @@
 package indianajones.gamepieces;
 
+import java.nio.charset.StandardCharsets;
+
 public class Obstacle{
     public int line;
     public int column;
@@ -7,7 +9,7 @@ public class Obstacle{
     public Obstacle(int line, int column) {
         this.line = line;
         this.column = column;
-        this.display = 'X';
+        this.display = '\u2BBD';
     }
 
 }

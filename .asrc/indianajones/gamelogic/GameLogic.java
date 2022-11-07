@@ -87,9 +87,11 @@ public class GameLogic {
     }
 
     void gameLogic() {
-        if (jonesIsOnTheSameSpotAs(this.grail)) {
+        if (jonesIsOnTheSameSpotAs(this.grail) && !jones.gotGrail) {
             grail.invisible();
             jones.gotGrail = true;
+            gameView.playSound("pickup.wav",false);
+
         } else if (this.jones.gotGrail && jonesIsOnTheSameSpotAs(this.exit)) {
             gameView.print(canvas.asString(), 20);
             indianaJones.jonesWon = true;
@@ -98,16 +100,18 @@ public class GameLogic {
             gameView.print(canvas.asString(), 20);
             indianaJones.snakeWon = true;
             this.gameOver = true;
+            if (indianaJones.lifes >= 2) {
+                gameView.playSound("lostlife.wav", false);
+            } else {
+                gameView.playSound("bigloss.wav", false);
+            }
             indianaJones.lifes--;
         }
     }
 
     public void printHearts() {
-        String str1 = "\u2661";
-        byte[] charset = str1.getBytes(StandardCharsets.UTF_8);
-        char heart = new String(charset, StandardCharsets.UTF_8).charAt(0);
         for (int i = 0; i < indianaJones.lifes; i++) {
-            canvas.paint(26, 0 + i, heart);
+            canvas.paint(26, i, '\u2661');
         }
 
     }
@@ -120,6 +124,8 @@ public class GameLogic {
                 while (!stop) {
                     //todo maybe flashing yes and no my / switch a and d confirm with enter
                     gameView.addTextToCanvas("\n".repeat(2) + " ".repeat(14) + "Do you wanna quit?", 0, 0, 20, Color.green, 0);
+                    gameView.addTextToCanvas("   \"ESC\"\nto continue", 100, 200, 20, Color.green, 0);
+                    gameView.addTextToCanvas("  \"ENTER\"\nto confirm", 550, 200, 20, Color.cyan, 0);
                     gameView.printCanvas();
                     Thread.sleep(125);
                     Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
@@ -258,14 +264,14 @@ public class GameLogic {
         canvas.paint(23, 25, 'T');
         canvas.paint(23, 26, '!');
         // Continue
-        canvas.paint(10,28,'C');
-        canvas.paint(10,29,'O');
-        canvas.paint(10,30,'N');
-        canvas.paint(10,31,'T');
-        canvas.paint(10,32,'I');
-        canvas.paint(10,33,'N');
-        canvas.paint(10,34,'U');
-        canvas.paint(10,35,'E');
+        canvas.paint(10, 28, 'C');
+        canvas.paint(10, 29, 'O');
+        canvas.paint(10, 30, 'N');
+        canvas.paint(10, 31, 'T');
+        canvas.paint(10, 32, 'I');
+        canvas.paint(10, 33, 'N');
+        canvas.paint(10, 34, 'U');
+        canvas.paint(10, 35, 'E');
 
 
     }
@@ -307,7 +313,7 @@ public class GameLogic {
             } else if (jones.line == quitexit3.line && jones.column == quitexit3.column) {
                 indianaJones.levelSelector = 3;
                 this.gameOver = true;
-            } else if (jones.line == exit4.line && jones.column == exit4.column&& indianaJones.checkpoint1) {
+            } else if (jones.line == exit4.line && jones.column == exit4.column && indianaJones.checkpoint1) {
                 indianaJones.levelSelector = 4;
                 this.gameOver = true;
             }
@@ -328,14 +334,13 @@ public class GameLogic {
         }
     }
 
-    public void fillArrayRandom() {
-        seed = (int) (Math.random() * 4000);
-        double randomNumber = random.nextDouble();
+    public void fillArrayRandom(int seed) {
+        this.seed = seed;
         int filler = 0;
         int[][] array = new int[27][48];
         for (int i = 0; i < 27; i++) {
             for (int b = 0; b < 48; b++) {
-                array[i][b] = ((seed * 1000) / ((i + 1) * (b + 1)) % 2);
+                array[i][b] = ((this.seed * 1000) / ((i + 1) * (b + 1)) % 2);
                 if (filler % 7 == 0 || filler % 4 == 0 || filler % 3 == 0 || filler % 5 == 0) {
                     filler++;
                 } else if (array[i][b] == 1) {
