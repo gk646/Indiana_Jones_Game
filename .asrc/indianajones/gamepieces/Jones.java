@@ -2,7 +2,6 @@ package indianajones.gamepieces;
 
 import indianajones.bin.IndianaJones;
 import indianajones.gamelogic.Canvas;
-import indianajones.gamelogic.GameLogic;
 import indianajones.gamelogic.GameView;
 
 import java.awt.event.KeyEvent;
@@ -19,7 +18,7 @@ public class Jones extends GamePiece {
         super(lines, columns);
         this.obstacles = new Obstacle[lines * columns];
         this.gameView = gameView;
-        this.display = '\u24BF';
+        this.display = 'J';
         this.canvas = canvas;
         this.indianaJones = indianaJones;
         this.line = (lines / 2);
@@ -33,19 +32,16 @@ public class Jones extends GamePiece {
         for (int keyCode : pressedKeys) {
             if (keyCode == KeyEvent.VK_W) {
                 if (line - 1 < 0 || jonesAgainstObstacleUp()) {
-                    line = line;
                 } else {
                     line -= 1;
                 }
             } else if (keyCode == KeyEvent.VK_S) {
                 if (line + 1 > lines - 1 || jonesAgainstObstacleDown()) {
-                    line = line;
                 } else {
                     line += 1;
                 }
             } else if (keyCode == KeyEvent.VK_A) {
                 if (column - 1 < 0 || jonesAgainstObstacleLeft()) {
-                    column = column;
                 } else {
                     column -= 1;
                 }
@@ -57,7 +53,6 @@ public class Jones extends GamePiece {
                 }
             }if (keyCode == KeyEvent.VK_D) {
                 if (column + 1 > columns - 1 || jonesAgainstObstacleRight()) {
-                    column = column;
                 } else {
                     column += 1;
                 }
@@ -67,17 +62,16 @@ public class Jones extends GamePiece {
     }
 
     public boolean jonesAgainstObstacleUp() {
-        int bonk = 0;
         for (Obstacle obstacle : obstacles) {
             if (obstacle != null) {
                 if (line - 1 == obstacle.line && column == obstacle.column) {
-                    bonk++;
-                    break;
+
+                    return true;
 
                 }
             }
         }
-        return bonk > 0;
+        return false;
     }
 
     public boolean jonesAgainstObstacleDown() {

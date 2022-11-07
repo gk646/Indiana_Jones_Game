@@ -2,10 +2,8 @@ package indianajones.gamelogic;
 
 import indianajones.bin.IndianaJones;
 import indianajones.gamepieces.*;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 public class GameLogic {

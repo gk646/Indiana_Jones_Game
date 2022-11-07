@@ -2,12 +2,11 @@ package indianajones.bin;
 
 import indianajones.gamelogic.GameLogic;
 import indianajones.gamelogic.GameView;
+import indianajones.gamepieces.Grail;
 import indianajones.gamepieces.Snake;
 
-import java.io.File;  // Import the File class
-import java.io.FileNotFoundException;
-import java.io.IOException;  // Import the IOException class to handle errors
-import java.io.FileWriter;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -81,6 +80,9 @@ public class IndianaJones {
         }
     }
 
+    public void playWin(GameView gameView) {
+        gameView.playSound("winsound.wav", false);
+    }
     public void startScreen(int lines, GameView gameView, IndianaJones indianaJones) throws InterruptedException {
 
         gameView.setWindowTitle("IndianaJones- Escape the snakes");
@@ -89,18 +91,22 @@ public class IndianaJones {
             gameView.printCanvas();
             Thread.sleep(1);
         }
-        Thread.sleep(1000);
+        Thread.sleep(800);
         String jones = "Welcome to the Jungle Mr.Jones (J)" + "\n";
         int c = 0;
         for (int i = 0; i <= jones.length() - 1; i++) {
+
             gameView.addTextToCanvas(" ".repeat(4) + "Indiana Jones", 0, 0, 46, Color.orange, 0);
             gameView.addTextToCanvas("\n".repeat(lines / 4) + " ".repeat(6) + jones.substring(0, c++), 0, 0, 20, Color.blue, 0);
             gameView.addTextToCanvas("\n".repeat(lines / 4) + " ".repeat(6) + jones.substring(0, 1 + i), 0, 0, 20, Color.blue, 0);
             gameView.printCanvas();
+            gameView.playSound("synth1.wav",false);
             Thread.sleep(75);
+
         }
         String gameInfo = "Catch the Grail (G) and escape the snakes (S) ";
         c = 0;
+        Thread.sleep(100);
         for (int i = 0; i <= gameInfo.length() - 1; i++) {
             gameView.addTextToCanvas(" ".repeat(4) + "Indiana Jones", 0, 0, 46, Color.orange, 0);
             gameView.addTextToCanvas("\n".repeat(lines / 4) + " ".repeat(6) + jones, 0, 0,
@@ -108,9 +114,11 @@ public class IndianaJones {
             gameView.addTextToCanvas("\n".repeat(8) + " ".repeat(2) + gameInfo.substring(0, c++), 0, 0, 20, Color.blue, 0);
             gameView.addTextToCanvas("\n".repeat(8) + " ".repeat(2) + gameInfo.substring(0, 1 + i), 0, 0, 20, Color.blue, 0);
             gameView.printCanvas();
+            gameView.playSound("synth1.wav",false);
             Thread.sleep(75);
         }
         c = 0;
+        Thread.sleep(100);
         String Continue = "Press Enter to continue...";
         for (int i = 0; i <= Continue.length() - 1; i++) {
             gameView.addTextToCanvas(" ".repeat(4) + "Indiana Jones", 0, 0, 46, Color.orange, 0);
@@ -120,6 +128,7 @@ public class IndianaJones {
             gameView.addTextToCanvas("\n".repeat(10) + " ".repeat(10) + Continue.substring(0, c++), 0, 0, 20, Color.blue, 0);
             gameView.addTextToCanvas("\n".repeat(10) + " ".repeat(10) + Continue.substring(0, 1 + i), 0, 0, 20, Color.blue, 0);
             gameView.printCanvas();
+            gameView.playSound("synth1.wav",false);
             Thread.sleep(75);
         }
 
@@ -150,7 +159,8 @@ public class IndianaJones {
         gameLogic.exit.line = 26;
         gameLogic.exit.column = 46;
     }
-    public void readCheckpointtxt(IndianaJones indianaJones, File file, Scanner scanner){
+
+    public void readCheckpointtxt(IndianaJones indianaJones, File file, Scanner scanner) {
         if (file.exists()) {
             while (scanner.hasNextLine()) {
                 String checkpointdata = scanner.nextLine();
@@ -170,7 +180,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 0;
+        indianaJones.levelSelector = -1;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -220,14 +230,15 @@ public class IndianaJones {
             if (indianaJones.levelSelector == 0) {
 
                 Scanner reader = new Scanner(checkpointtxt);
-                indianaJones.readCheckpointtxt(indianaJones,checkpointtxt,reader);
+                indianaJones.readCheckpointtxt(indianaJones, checkpointtxt, reader);
                 reader.close();
                 GameLogic levelSelectScreen = new GameLogic(lines, columns, 100, 0, screen, indianaJones);
                 screen.setWindowTitle("Indiana Jones - \"Level Selection\"");
                 indianaJones.setupLevelSelectScreen(levelSelectScreen, lines, columns);
                 indianaJones.lifes = 3;
-                levelSelectScreen.grail.line=0;
-                levelSelectScreen.grail.column=0;
+                levelSelectScreen.grail.invisible();
+                levelSelectScreen.grail.line = 0;
+                levelSelectScreen.grail.column = 0;
                 levelSelectScreen.gameLoopLevelSelect();
             }
             //Level 1 / The Warehouse
@@ -247,7 +258,7 @@ public class IndianaJones {
                         indianaJones.levelSelector = 0;
                     }
                     if (indianaJones.jonesWon) {
-                        screen.playSound("winsound.wav",false);
+                        indianaJones.playWin(screen);
                         if (!indianaJones.checkpoint1) {
                             Files.writeString(path, "\nYou have reached Checkpoint 1!", APPEND);
                         }
@@ -270,10 +281,10 @@ public class IndianaJones {
                         indianaJones.levelSelector = 0;
                     }
                     if (indianaJones.jonesWon) {
+                        indianaJones.playWin(screen);
                         if (!indianaJones.checkpoint2) {
                             Files.writeString(path, "\nYou have reached Checkpoint 2!", APPEND);
                         }
-
                         indianaJones.levelSelector = 0;
                     }
                 }
@@ -281,7 +292,7 @@ public class IndianaJones {
             // Level 2 / Random Levels
             // todo make random levels more fun
             else if (indianaJones.levelSelector == 2) {
-                int seed = (int) (Math.random()*4000);
+                int seed = (int) (Math.random() * 4000);
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic randomlevel = new GameLogic(lines, columns, tickspeed, 5, screen, indianaJones);
                     randomlevel.fillArrayRandom(seed);
@@ -302,13 +313,13 @@ public class IndianaJones {
             else if (indianaJones.levelSelector == 3) {
                 gameFinish = true;
 
-            //Checkpoints
+                //Checkpoints
                 //todo correct if structure
             } else if (indianaJones.levelSelector == 4) {
 
-                if(indianaJones.checkpoint1){
-                    indianaJones.levelSelector=12;
-                }else if(indianaJones.checkpoint2){
+                if (indianaJones.checkpoint1) {
+                    indianaJones.levelSelector = 12;
+                } else if (indianaJones.checkpoint2) {
                     indianaJones.levelSelector = 13;
                 }
             }
