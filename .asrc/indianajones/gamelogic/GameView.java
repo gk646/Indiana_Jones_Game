@@ -99,7 +99,7 @@ public class GameView {
      * @param title Der Fenstertitel
      */
     public void setWindowTitle(String title) {
-        window.setTitle(title + " - " + Version.getStandardTitle());
+        window.setTitle(title);
     }
 
     /**
