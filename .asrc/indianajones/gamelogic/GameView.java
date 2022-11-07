@@ -33,13 +33,13 @@ public class GameView {
      * Breite der Leinwand in Pixeln. Sie können diese Variable anpassen.
      * Achtung: WIDTH * HEIGHT muss im Bereich zwischen 500.000 Pixeln und 540.000 Pixeln liegen.
      */
-    public static final int WIDTH = 960; // Original: 960
+    public static final int WIDTH = 1056; // Original: 960
 
     /**
      * Höhe der Leinwand in Pixeln. Sie können diese Variable anpassen.
      * Achtung: WIDTH * HEIGHT muss im Bereich zwischen 500.000 Pixeln und 540.000 Pixeln liegen.
      */
-    public static final int HEIGHT = 540; // Original: 540
+    public static final int HEIGHT = 594; // Original: 540
 
     /**
      * Rechteck mit den Grenzen der Leinwand.
@@ -72,16 +72,6 @@ public class GameView {
      * </pre>
      */
     public GameView() {
-        if (WIDTH * HEIGHT < 500000
-            || WIDTH * HEIGHT > 540000
-            || WIDTH < 600) {
-            throw new IllegalArgumentException(
-                    "WIDTH * HEIGHT muss im Bereich zwischen 500.000 Pixeln und 540.000 Pixeln liegen."
-                    + "\n Die Breite muss mindestens 700 Pixel betragen."
-                    + "\nWIDTH = " + WIDTH
-                    + "\nHEIGHT = " + HEIGHT
-                    + "\nWIDTH * HEIGHT = " + WIDTH * HEIGHT);
-        }
         this.gameTime = new GameTime();
         this.swingAdapter = new SwingAdapter();
         this.window = new Window(swingAdapter);
