@@ -19,90 +19,88 @@ public class Snake extends GamePiece {
         if (Math.random() > 0.5) {
             if ((jones.getLine() - line > 0) && !snakeCollisionDown()) {
                 line++;
+                display = '\u2240';
 
             }
             if ((jones.getLine() - line) < 0) {
                 if (snakeCollisionUp()) {
-                    line = line;
                 } else {
                     line--;
+                    display = '\u2240';
                 }
             }
         } else {
             if ((jones.getColumn() - column) < 0) {
                 if (snakeCollisionLeft()) {
-                    column = column;
                 } else {
                     column--;
+                    display = '\u223D';
                 }
             } else if ((jones.getColumn() - column) > 0) {
                 if (snakeCollisionRight()) {
-                    column = column;
                 } else {
                     column++;
+                    display = '\u223D';
                 }
             }
         }
     }
-    public void moveHorizontal(){
-        if(column>=1){
+
+    public void moveHorizontal() {
+        if (column >= 1) {
             column--;
         }
     }
+
     private boolean snakeCollisionUp() {
-        int bonk = 0;
         for (Obstacle obstacle : obstacles) {
             if (obstacle != null) {
                 if (line - 1 == obstacle.line && column == obstacle.column) {
-                    bonk++;
-                    break;
+
+                    return true;
 
                 }
             }
         }
-        return bonk > 0;
+        return false;
     }
 
     private boolean snakeCollisionDown() {
-        int bonk = 0;
         for (Obstacle obstacle : obstacles) {
             if (obstacle != null) {
                 if (line + 1 == obstacle.line && column == obstacle.column) {
-                    bonk++;
-                    break;
-
+                    return true;
                 }
             }
         }
-        return bonk > 0;
+        return false;
     }
 
     private boolean snakeCollisionLeft() {
-        int bonk = 0;
+
         for (Obstacle obstacle : obstacles) {
             if (obstacle != null) {
                 if (line == obstacle.line && column - 1 == obstacle.column) {
-                    bonk++;
-                    break;
+
+                    return true;
 
                 }
             }
         }
-        return bonk > 0;
+        return false;
     }
 
     private boolean snakeCollisionRight() {
-        int bonk = 0;
         for (Obstacle obstacle : obstacles) {
             if (obstacle != null) {
                 if (line == obstacle.line && column + 1 == obstacle.column) {
-                    bonk++;
-                    break;
+
+                    return true;
 
                 }
             }
         }
-        return bonk > 0;
+        return false;
     }
 
 
