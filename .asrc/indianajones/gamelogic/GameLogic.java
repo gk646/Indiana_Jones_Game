@@ -2,25 +2,26 @@ package indianajones.gamelogic;
 
 import indianajones.bin.IndianaJones;
 import indianajones.gamepieces.*;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
 public class GameLogic {
-    private int lines;
+    private final int lines;
     public int seed;
     public GameView gameView;
     public IndianaJones indianaJones;
-    private int columns;
+    private final int columns;
     public int tickspeed;
-    private Canvas canvas;
+    private final Canvas canvas;
     public Obstacle[] obstacles;
     public Jones jones;
     public Snake[] snakes;
-    private GamePiece[] gamePieces;
+    private final GamePiece[] gamePieces;
     public Grail grail;
     public Exit exit;
-    private int numberOfSnakes;
+    private final int numberOfSnakes;
     public Snake snake;
     public boolean gameOver;
     public Random random;
@@ -88,13 +89,13 @@ public class GameLogic {
         if (jonesIsOnTheSameSpotAs(this.grail) && !jones.gotGrail) {
             grail.invisible();
             jones.gotGrail = true;
-            gameView.playSound("pickup.wav",false);
+            gameView.playSound("pickup.wav", false);
 
         } else if (this.jones.gotGrail && jonesIsOnTheSameSpotAs(this.exit)) {
             gameView.print(canvas.asString(), 22);
             indianaJones.jonesWon = true;
             this.gameOver = true;
-            gameView.playSound("winsound.wav",false);
+            gameView.playSound("winsound.wav", false);
         } else if (snakeGotJones()) {
             gameView.print(canvas.asString(), 22);
             indianaJones.snakeWon = true;
@@ -120,7 +121,7 @@ public class GameLogic {
         for (int keyCode : pressedKeys) {
             if (keyCode == KeyEvent.VK_ESCAPE) {
                 boolean stop = false;
-                gameView.playSound("menuback.wav",false);
+                gameView.playSound("menuback.wav", false);
                 while (!stop) {
                     //todo maybe flashing yes and no my / switch a and d confirm with enter
                     gameView.addTextToCanvas("\n".repeat(2) + " ".repeat(14) + "Do you wanna quit?", 0, 0, 22, Color.green, 0);
@@ -176,37 +177,38 @@ public class GameLogic {
         int wave1 = 0;
         int wave2 = 0;
         int counter1 = 0;
-        gameView.playSound("bumblebeekorsakov.wav",false);
+        exit.display=' ';
+        gameView.playSound("bumblebeekorsakov.wav", false);
         while (!this.gameOver) {
             this.canvas.fill(' ');
             escapeMenu();
-            if (timegone >= 550) {
-
-                if(jones.gotGrail){
+            if (timegone >= 600) {
+                if (jones.gotGrail) {
                     grail.invisible();
-                }else {
+                } else {
                     grail.line = 13;
                     grail.column = 40;
                     grail.display = '\u269A';
+                    exit.display= 'E';
                 }
-                for(Snake snake: snakes){
-                    if(snake != null && snake.column <=2) {
+                for (Snake snake : snakes) {
+                    if (snake != null && snake.column <= 2) {
                         snake.display = ' ';
                         snake.line = 0;
                         snake.column = 46;
-                    }else if(snake!=null&&snake.column<46){
-                        canvas.paint(snake.line,snake.column,snake.display);
+                    } else if (snake != null && snake.column < 46) {
+                        canvas.paint(snake.line, snake.column, snake.display);
                         snake.moveHorizontal();
-                    }else if (snake!= null && snake.line!=0){
-                        snake.line=0;
+                    } else if (snake != null && snake.line != 0) {
+                        snake.line = 0;
                     }
                 }
             }
-            if (arraylength < 75) {
+            if (arraylength < 65) {
                 snakes[arraylength] = new Snake((int) (Math.random() * 27), 47, jones);
                 arraylength++;
             }
-            if (timegone > 300 && timegone<550) {
+            if (timegone > 350 && timegone < 600) {
                 jones.powerUpEnabled = true;
                 if (snakes[counter1] != null) {
                     if (wave1 <= 26) {
@@ -220,14 +222,14 @@ public class GameLogic {
                     snakes[counter1].line = wave2;
                     snakes[counter1].column = 47;
                     wave1++;
-                    if (counter1 < 75 - 1) {
+                    if (counter1 < 65 - 1) {
                         counter1++;
                     } else {
                         counter1 = 0;
                     }
                 }
             }
-            if(timegone<550) {
+            if (timegone < 600) {
                 for (Snake snake : snakes) {
                     if (snake != null && snake.column > 0) {
                         snake.moveHorizontal();
@@ -264,6 +266,39 @@ public class GameLogic {
     }
 
     public void paintLevelSelectText() {
+        //Movement
+        gameView.addTextToCanvas("""
+                Movement:
+                W: Up
+                A: Left
+                S: Down
+                D: Right
+                Space: Powerup
+                Esc: Menu""", 20, 20, 20, Color.white, 0);
+        gameView.addTextToCanvas("""
+                Gamepieces:
+                Jones: \u24BF
+                Snakes: S\\\u2240
+                Grail: \u269A
+                Obstacle: \u2BBD
+                Exit: E
+                Hearts: \u2661
+                """, 20, 400, 20, Color.white, 0);
+        if (jones.line > 10 && jones.line < 16 && jones.column < 26 && jones.column > 20) {
+            gameView.addTextToCanvas("Description:\nGo near a gate to \nget " +
+                    "more info!", 630, 0, 18, Color.white, 0);
+        } else if (jones.line > 9 && jones.line < 17 && jones.column <= 20 && jones.column >= 15){
+            gameView.addTextToCanvas("Description:\nThese are randomly\ngenerated levels with\na seed. Same seed same\nlevel! "
+                    , 630, 0, 18, Color.white, 0);
+        }else if(jones.line > 9 && jones.line < 17 && jones.column <= 31 && jones.column >= 26){
+            gameView.addTextToCanvas("Description:\nWhen you finish a level\nthe game will save\nyour progess in a .txt\nfile!"
+                    +" Using \"continue\"\nputs you where you\nlast left off.", 630, 0, 18, Color.white, 0);
+        }else if(jones.line >=4 && jones.line <= 10 && jones.column <= 26 && jones.column >= 20){
+            gameView.addTextToCanvas("Descrption:\nStart your journey\nto bring home the holy\ngrail! You start from\nthe beginning!", 630, 0, 18, Color.white, 0);
+        }else if(jones.line >=16 && jones.line <= 22 && jones.column <= 26 && jones.column >= 20){
+            gameView.addTextToCanvas("Description:\nQuits the game! ", 630, 0, 18, Color.white, 0);
+
+        }
         //Story
         canvas.paint(3, 22, 'S');
         canvas.paint(3, 23, 'T');
@@ -327,19 +362,19 @@ public class GameLogic {
             if (jones.line == storyexit1.line && jones.column == storyexit1.column) {
                 indianaJones.levelSelector = 1;
                 this.gameOver = true;
-                gameView.playSound("select.wav",false);
+                gameView.playSound("select.wav", false);
             } else if (jones.line == randomexit2.line && jones.column == randomexit2.column) {
                 indianaJones.levelSelector = 2;
                 this.gameOver = true;
-                gameView.playSound("select.wav",false);
+                gameView.playSound("select.wav", false);
             } else if (jones.line == quitexit3.line && jones.column == quitexit3.column) {
                 indianaJones.levelSelector = 3;
                 this.gameOver = true;
-                gameView.playSound("select.wav",false);
+                gameView.playSound("select.wav", false);
             } else if (jones.line == exit4.line && jones.column == exit4.column && indianaJones.checkpoint1) {
                 indianaJones.levelSelector = 4;
                 System.out.println("hey");
-                gameView.playSound("select.wav",false);
+                gameView.playSound("select.wav", false);
                 this.gameOver = true;
             }
             sleep(tickspeed);
@@ -411,8 +446,9 @@ public class GameLogic {
         // @formatter:on
         fillArray(lvl1);
     }
-    public void theTown(){
-        int [][] theTown= {
+
+    public void theTown() {
+        int[][] theTown = {
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -442,7 +478,7 @@ public class GameLogic {
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         };
         fillArray(theTown);
-        }
+    }
 
     public void levelSelect() {
         int[][] levelSelect = {

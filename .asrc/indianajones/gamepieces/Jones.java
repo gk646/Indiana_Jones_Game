@@ -11,7 +11,7 @@ public class Jones extends GamePiece {
     public boolean gotGrail;
     public Canvas canvas;
     public IndianaJones indianaJones;
-    private GameView gameView;
+    private final GameView gameView;
     public Obstacle[] obstacles;
 
     public Jones(int lines, int columns, GameView gameView,IndianaJones indianaJones, Canvas canvas) {
@@ -31,7 +31,7 @@ public class Jones extends GamePiece {
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
             if (keyCode == KeyEvent.VK_SPACE && powerUpEnabled) {
-                column += 5;
+                column += 6;
             }
             else if (keyCode == KeyEvent.VK_W) {
                 if (line - 1 < 0 || jonesAgainstObstacleUp()) {
