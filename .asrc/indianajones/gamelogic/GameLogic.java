@@ -125,9 +125,9 @@ public class GameLogic {
                 while (!stop) {
                     //todo maybe flashing yes and no my / switch a and d confirm with enter
                     gameView.addTextToCanvas("\n".repeat(2) + " ".repeat(18) + "Back to menu?", 0, 0, 22, Color.white, 0);
-                    gameView.addTextToCanvas(" ".repeat(8)+"\"ESC\"\n" +" ".repeat(5) +"to continue", 100, 200, 22, Color.white, 0);
-                    gameView.addTextToCanvas(" ".repeat(6)+ "\"ENTER\"\n"+" ".repeat(4)+"to confirm", 520, 200, 22, Color.white, 0);
-                    gameView.addTextToCanvas("Game paused!",380,450,26,Color.white,0);
+                    gameView.addTextToCanvas(" ".repeat(8) + "\"ESC\"\n" + " ".repeat(5) + "to continue", 100, 200, 22, Color.white, 0);
+                    gameView.addTextToCanvas(" ".repeat(6) + "\"ENTER\"\n" + " ".repeat(4) + "to confirm", 520, 200, 22, Color.white, 0);
+                    gameView.addTextToCanvas("Game paused!", 380, 450, 26, Color.white, 0);
                     gameView.printCanvas();
                     Thread.sleep(125);
                     Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
@@ -171,7 +171,7 @@ public class GameLogic {
     }
 
     public void gameLoopStandoff() throws InterruptedException {
-        int timegone = 0;
+        int timegone = 280;
         int length = 75;
         this.snakes = new Snake[length];
         int arraylength = 0;
@@ -183,6 +183,31 @@ public class GameLogic {
         while (!this.gameOver) {
             this.canvas.fill(' ');
             escapeMenu();
+            if (timegone == 300) {
+                String powerup = "Press \"SPACE\" to teleport 6 fields\n" + " ".repeat(10) + "to the front\n";
+                for (int i = 1; i < powerup.length(); i++) {
+                    gameView.addTextToCanvas("Powerup enabled!", 320, 50, 26, Color.white, 0);
+                    gameView.addTextToCanvas(powerup.substring(0, i), 150, 200, 22, Color.white, 0);
+                    gameView.printCanvas();
+                    Thread.sleep(50);
+                }
+                boolean stop = false;
+                while (!stop) {
+                    gameView.addTextToCanvas("Powerup enabled!", 320, 50, 26, Color.white, 0);
+                    gameView.addTextToCanvas(powerup, 150, 200, 22, Color.white, 0);
+                    gameView.addTextToCanvas("Press \"ENTER\" to contine!", 230, 400, 25, Color.white, 0);
+                    gameView.printCanvas();
+                    Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
+                    for (int keypress : pressedKeys1) {
+
+                        if (keypress == KeyEvent.VK_ENTER) {
+                            stop = true;
+                        }
+                    }
+
+                }
+                jones.powerUpEnabled = true;
+            }
             if (timegone >= 600) {
                 if (jones.gotGrail) {
                     grail.invisible();
@@ -210,7 +235,6 @@ public class GameLogic {
                 arraylength++;
             }
             if (timegone > 350 && timegone < 600) {
-                jones.powerUpEnabled = true;
                 if (snakes[counter1] != null) {
                     if (wave1 <= 26) {
                         wave2 = wave1;
@@ -556,8 +580,9 @@ public class GameLogic {
         };
         fillArray(levelSelect);
     }
+
     public void gunFight() {
-        int [][] array = {
+        int[][] array = {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

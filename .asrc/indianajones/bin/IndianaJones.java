@@ -24,6 +24,7 @@ public class IndianaJones {
     public boolean checkpoint2 = false;
     public boolean checkpoint3 = false;
     public boolean checkpoint4 = false;
+    public boolean checkpoint5 = false;
     public boolean jonesWon;
     public int lifes;
 
@@ -175,7 +176,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 13;
+        indianaJones.levelSelector = 12;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -190,14 +191,16 @@ public class IndianaJones {
             Scanner reader = new Scanner(checkpointtxt);
             while (reader.hasNextLine()) {
                 String checkpointdata = reader.nextLine();
-                if (checkpointdata.contains("1")) {
+                if (checkpointdata.contains("You have reached Checkpoint 1!")) {
                     indianaJones.checkpoint1 = true;
-                } else if (checkpointdata.contains("2")) {
+                }  if (checkpointdata.contains("You have reached Checkpoint 2!")) {
                     indianaJones.checkpoint2 = true;
-                } else if (checkpointdata.contains("3")) {
+                } if (checkpointdata.contains("You have reached Checkpoint 3!")) {
                     indianaJones.checkpoint3 = true;
-                } else if (checkpointdata.contains("4")) {
+                } if (checkpointdata.contains("You have reached Checkpoint 4!")) {
                     indianaJones.checkpoint4 = true;
+                }if(checkpointdata.contains(("You have reached Checkpoint 5!"))){
+                    indianaJones.checkpoint5 = true;
                 }
 
             }
@@ -289,25 +292,29 @@ public class IndianaJones {
             //Level 1.2 / "Pac Man"
             else if (indianaJones.levelSelector == 13) {
                 screen.setWindowTitle("Indiana Jones - \"Pac Man??!\"");
-                GameLogic pacManLevel = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
-                pacManLevel.pacMan();
-                indianaJones.setObstaclesforGamePieces(pacManLevel);
-                pacManLevel.snake.obstacles = pacManLevel.obstacles;
-                pacManLevel.jones.column = 20;
-                pacManLevel.gameLoopPacMan();
-                if (indianaJones.snakeWon && indianaJones.lifes < 1) {
-                    indianaJones.snakeWon = false;
-                    indianaJones.levelSelector = 0;
-                }
-                if (indianaJones.jonesWon) {
-                    if (!indianaJones.checkpoint3) {
-                        Files.writeString(path, "\nYou have reached Checkpoint 3!", APPEND);
+                indianaJones.jonesWon= false;
+
+                while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
+                    GameLogic pacManLevel = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
+                    pacManLevel.pacMan();
+                    indianaJones.setObstaclesforGamePieces(pacManLevel);
+                    pacManLevel.snake.obstacles = pacManLevel.obstacles;
+                    pacManLevel.jones.column = 20;
+                    pacManLevel.gameLoopPacMan();
+                    if (indianaJones.snakeWon && indianaJones.lifes < 1) {
+                        indianaJones.snakeWon = false;
+                        indianaJones.levelSelector = 0;
                     }
-                    indianaJones.levelSelector = 14;
+                    if (indianaJones.jonesWon) {
+                        if (!indianaJones.checkpoint3) {
+                            Files.writeString(path, "\nYou have reached Checkpoint 3!", APPEND);
+                        }
+                        indianaJones.levelSelector = 14;
+                    }
                 }
             } else if (indianaJones.levelSelector == 14) {
                 screen.setWindowTitle("Indiana Jones - \"The Shootout\"");
-                GameLogic shootout = new GameLogic(lines, columns,tickspeed,0,screen,indianaJones);
+                GameLogic shootout = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
                 shootout.gunFight();
                 indianaJones.setObstaclesforGamePieces(shootout);
                 shootout.gameLoop();
@@ -359,8 +366,9 @@ public class IndianaJones {
                 if (indianaJones.checkpoint2) {
                     indianaJones.levelSelector = 13;
 
-                }if(indianaJones.checkpoint3){
-                    indianaJones.levelSelector =14;
+                }
+                if (indianaJones.checkpoint3) {
+                    indianaJones.levelSelector = 14;
                 }
             }
         }
