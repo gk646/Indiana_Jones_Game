@@ -2,7 +2,6 @@ package indianajones.bin;
 
 import indianajones.gamelogic.GameLogic;
 import indianajones.gamelogic.GameView;
-import indianajones.gamepieces.Grail;
 import indianajones.gamepieces.Snake;
 
 import java.io.File;
@@ -180,7 +179,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 0;
+        indianaJones.levelSelector = 13;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -295,7 +294,7 @@ public class IndianaJones {
             else if (indianaJones.levelSelector == 13) {
                 screen.setWindowTitle("Indiana Jones - \"The Town\"");
                 GameLogic town = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
-                town.theTown();
+                town.pacMan();
                 indianaJones.setObstaclesforGamePieces(town);
                 town.gameLoop();
                 if (indianaJones.snakeWon && indianaJones.lifes < 1) {
