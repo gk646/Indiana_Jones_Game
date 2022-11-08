@@ -111,7 +111,7 @@ public class Snake extends GamePiece {
         }
     }*/
     public void movePacMan() {
-        if (Math.random() > 0.6) {
+        if (Math.random() > 0.5) {
             if (jonesIsAbove()) {
                 if (!snakeCollisionUp()&&line>1) {
                     line--;
