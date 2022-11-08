@@ -45,13 +45,120 @@ public class Snake extends GamePiece {
             }
         }
     }
-    public void movePacMan(){
-        if(!snakeCollisionLeft()){
-            column--;
-        }else if(!snakeCollisionDown()){
-            line++;
+
+    public boolean jonesIsAbove() {
+        return jones.getLine() - line < 0;
+    }
+
+    public boolean jonesIsBelow() {
+        return jones.getLine() - line > 0;
+    }
+
+    public boolean jonesIsLeft() {
+        return jones.getColumn() - column < 0;
+    }
+
+    public boolean jonesIsRight() {
+        return jones.getColumn() - column > 0;
+    }
+
+    /*ublic void movePacMan() {
+        if (Math.random() > 0.6) {
+            if (jonesIsAbove()) {
+                if (!snakeCollisionUp()) {
+                    line--;
+                } else if (!snakeCollisionLeft()) {
+                    column--;
+                } else if (!snakeCollisionRight()) {
+                    column++;
+                } else if (!snakeCollisionDown()) {
+                    column++;
+                }
+            }
+            if (jonesIsBelow()) {
+                if (!snakeCollisionDown()) {
+                    line++;
+                } else if (!snakeCollisionLeft()) {
+                    column--;
+                } else if (!snakeCollisionRight()) {
+                    column++;
+                } else if (!snakeCollisionUp()) {
+                    line--;
+                }
+            }
+            if (jonesIsLeft()) {
+                if (!snakeCollisionLeft()) {
+                    column--;
+                } else if (!snakeCollisionUp()) {
+                    line--;
+                } else if (!snakeCollisionDown()) {
+                    line++;
+                } else if (!snakeCollisionRight()) {
+                    column++;
+                }
+            }
+            if (jonesIsRight()) {
+                if (!snakeCollisionRight()) {
+                    column++;
+                } else if (!snakeCollisionUp()) {
+                    line--;
+                } else if (!snakeCollisionDown()) {
+                    line++;
+                } else if (!snakeCollisionLeft()) {
+                    column--;
+                }
+            }
+        }
+    }*/
+    public void movePacMan() {
+        if (Math.random() > 0.6) {
+            if (jonesIsAbove()) {
+                if (!snakeCollisionUp()&&line>1) {
+                    line--;
+                } else if (snakeCollisionUp() && jonesIsLeft() && !snakeCollisionLeft()) {
+                    column--;
+                } else if (snakeCollisionUp() && jonesIsRight() && !snakeCollisionRight()) {
+                    column++;
+                } else if (snakeCollisionUp() && snakeCollisionLeft() && !snakeCollisionRight()) {
+                    column++;
+                }
+            } else if (jonesIsBelow()) {
+                if (!snakeCollisionDown()) {
+                    line++;
+                } else if (snakeCollisionUp() && jonesIsLeft() && !snakeCollisionLeft()) {
+                    column--;
+                } else if (snakeCollisionDown() && jonesIsRight() && !snakeCollisionRight()) {
+                    column++;
+                } else if (!snakeCollisionUp()&&line>1) {
+                    line--;
+                }
+            }
+        }else{
+             if (jonesIsLeft()) {
+                if (!snakeCollisionLeft()) {
+                    column--;
+                } else if (!snakeCollisionUp()&&line>1) {
+                    line--;
+                } else if (!snakeCollisionDown()) {
+                    line++;
+                } else if (!snakeCollisionRight()) {
+                    column++;
+                }
+            }
+            else if (jonesIsRight()) {
+                if (!snakeCollisionRight()) {
+                    column++;
+                } else if (!snakeCollisionUp()&&line>1) {
+                    line--;
+                } else if (!snakeCollisionDown()) {
+                    line++;
+                } else if (!snakeCollisionLeft()) {
+                    column--;
+                }
+            }
         }
     }
+
     public void moveHorizontal() {
         if (column >= 1) {
             column--;
