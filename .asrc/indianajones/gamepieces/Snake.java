@@ -62,58 +62,10 @@ public class Snake extends GamePiece {
         return jones.getColumn() - column > 0;
     }
 
-    /*ublic void movePacMan() {
-        if (Math.random() > 0.6) {
-            if (jonesIsAbove()) {
-                if (!snakeCollisionUp()) {
-                    line--;
-                } else if (!snakeCollisionLeft()) {
-                    column--;
-                } else if (!snakeCollisionRight()) {
-                    column++;
-                } else if (!snakeCollisionDown()) {
-                    column++;
-                }
-            }
-            if (jonesIsBelow()) {
-                if (!snakeCollisionDown()) {
-                    line++;
-                } else if (!snakeCollisionLeft()) {
-                    column--;
-                } else if (!snakeCollisionRight()) {
-                    column++;
-                } else if (!snakeCollisionUp()) {
-                    line--;
-                }
-            }
-            if (jonesIsLeft()) {
-                if (!snakeCollisionLeft()) {
-                    column--;
-                } else if (!snakeCollisionUp()) {
-                    line--;
-                } else if (!snakeCollisionDown()) {
-                    line++;
-                } else if (!snakeCollisionRight()) {
-                    column++;
-                }
-            }
-            if (jonesIsRight()) {
-                if (!snakeCollisionRight()) {
-                    column++;
-                } else if (!snakeCollisionUp()) {
-                    line--;
-                } else if (!snakeCollisionDown()) {
-                    line++;
-                } else if (!snakeCollisionLeft()) {
-                    column--;
-                }
-            }
-        }
-    }*/
     public void movePacMan() {
         if (Math.random() > 0.5) {
             if (jonesIsAbove()) {
-                if (!snakeCollisionUp()&&line>1) {
+                if (!snakeCollisionUp() && line > 1) {
                     line--;
                 } else if (snakeCollisionUp() && jonesIsLeft() && !snakeCollisionLeft()) {
                     column--;
@@ -129,26 +81,25 @@ public class Snake extends GamePiece {
                     column--;
                 } else if (snakeCollisionDown() && jonesIsRight() && !snakeCollisionRight()) {
                     column++;
-                } else if (!snakeCollisionUp()&&line>1) {
+                } else if (!snakeCollisionUp() && line > 1) {
                     line--;
                 }
             }
-        }else{
-             if (jonesIsLeft()) {
+        } else {
+            if (jonesIsLeft()) {
                 if (!snakeCollisionLeft()) {
                     column--;
-                } else if (!snakeCollisionUp()&&line>1) {
+                } else if (!snakeCollisionUp() && line > 1) {
                     line--;
                 } else if (!snakeCollisionDown()) {
                     line++;
                 } else if (!snakeCollisionRight()) {
                     column++;
                 }
-            }
-            else if (jonesIsRight()) {
+            } else if (jonesIsRight()) {
                 if (!snakeCollisionRight()) {
                     column++;
-                } else if (!snakeCollisionUp()&&line>1) {
+                } else if (!snakeCollisionUp() && line > 1) {
                     line--;
                 } else if (!snakeCollisionDown()) {
                     line++;

@@ -31,7 +31,9 @@ public class Jones extends GamePiece {
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
             if (keyCode == KeyEvent.VK_SPACE && powerUpEnabled) {
-                column += 6;
+                if(column+6<columns) {
+                    column += 6;
+                }
             }
             else if (keyCode == KeyEvent.VK_W) {
                 if (line - 1 < 0 || jonesAgainstObstacleUp()) {
