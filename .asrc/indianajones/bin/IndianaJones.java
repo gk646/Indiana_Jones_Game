@@ -180,7 +180,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = -1;
+        indianaJones.levelSelector = 0;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -220,7 +220,6 @@ public class IndianaJones {
         //todo transition screens
         GameView screen = new GameView();
         while (!gameFinish) {
-            System.out.println(indianaJones.levelSelector);
             //StartScreen-----handled in method startScreen()
             if (indianaJones.levelSelector == -1) {
                 indianaJones.startScreen(lines, screen, indianaJones);
