@@ -177,7 +177,7 @@ public class GameLogic {
         int wave1 = 0;
         int wave2 = 0;
         int counter1 = 0;
-        exit.display=' ';
+        exit.display = ' ';
         gameView.playSound("bumblebeekorsakov.wav", false);
         while (!this.gameOver) {
             this.canvas.fill(' ');
@@ -189,7 +189,7 @@ public class GameLogic {
                     grail.line = 13;
                     grail.column = 40;
                     grail.display = '\u269A';
-                    exit.display= 'E';
+                    exit.display = 'E';
                 }
                 for (Snake snake : snakes) {
                     if (snake != null && snake.column <= 2) {
@@ -287,15 +287,15 @@ public class GameLogic {
         if (jones.line > 10 && jones.line < 16 && jones.column < 26 && jones.column > 20) {
             gameView.addTextToCanvas("Description:\nGo near a gate to \nget " +
                     "more info!", 630, 0, 18, Color.white, 0);
-        } else if (jones.line > 9 && jones.line < 17 && jones.column <= 20 && jones.column >= 15){
+        } else if (jones.line > 9 && jones.line < 17 && jones.column <= 20 && jones.column >= 15) {
             gameView.addTextToCanvas("Description:\nThese are randomly\ngenerated levels with\na seed. Same seed same\nlevel! "
                     , 630, 0, 18, Color.white, 0);
-        }else if(jones.line > 9 && jones.line < 17 && jones.column <= 31 && jones.column >= 26){
+        } else if (jones.line > 9 && jones.line < 17 && jones.column <= 31 && jones.column >= 26) {
             gameView.addTextToCanvas("Description:\nWhen you finish a level\nthe game will save\nyour progess in a .txt\nfile!"
-                    +" Using \"continue\"\nputs you where you\nlast left off.", 630, 0, 18, Color.white, 0);
-        }else if(jones.line >=4 && jones.line <= 10 && jones.column <= 26 && jones.column >= 20){
+                    + " Using \"continue\"\nputs you where you\nlast left off.", 630, 0, 18, Color.white, 0);
+        } else if (jones.line >= 4 && jones.line <= 10 && jones.column <= 26 && jones.column >= 20) {
             gameView.addTextToCanvas("Descrption:\nStart your journey\nto bring home the holy\ngrail! You start from\nthe beginning!", 630, 0, 18, Color.white, 0);
-        }else if(jones.line >=16 && jones.line <= 22 && jones.column <= 26 && jones.column >= 20){
+        } else if (jones.line >= 16 && jones.line <= 22 && jones.column <= 26 && jones.column >= 20) {
             gameView.addTextToCanvas("Description:\nQuits the game! ", 630, 0, 18, Color.white, 0);
 
         }
@@ -383,14 +383,34 @@ public class GameLogic {
 
         sleep(500);
     }
+
     public void gameLoopPacMan() throws InterruptedException {
-        this.snakes = new Snake [4];
+        this.snakes = new Snake[4];
+        boolean initialize = true;
         while (!this.gameOver) {
+            if (jones.column >= 20 && initialize) {
+                for (int i = 0; i < snakes.length; i++) {
+                    snakes[i] = new Snake(lines, columns, jones);
+                    snakes[i].line = 10;
+                    snakes[i].column = 34;
+                }
+                for (Snake snake : snakes) {
+                    snake.obstacles = obstacles;
+                }
+                initialize = false;
+            }
             this.canvas.fill(' ');
             escapeMenu();
             for (GamePiece gamePiece : gamePieces) {
                 gamePiece.move();
                 canvas.paint(gamePiece.line, gamePiece.column, gamePiece.display);
+            }
+
+            for (Snake snake : snakes) {
+                if (snake != null) {
+                    canvas.paint(snake.line, snake.column, snake.display);
+                    snake.movePacMan();
+                }
             }
             for (Obstacle obstacle : obstacles) {
                 if (obstacle != null) {
@@ -483,7 +503,7 @@ public class GameLogic {
                 {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0},
                 {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1},
                 {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0},
                 {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0},

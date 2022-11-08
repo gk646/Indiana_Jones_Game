@@ -290,13 +290,15 @@ public class IndianaJones {
                     }
                 }
             }
-            //Level 1.2 / "The Town"
+            //Level 1.2 / "Pac Man"
             else if (indianaJones.levelSelector == 13) {
                 screen.setWindowTitle("Indiana Jones - \"The Town\"");
-                GameLogic town = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
-                town.pacMan();
-                indianaJones.setObstaclesforGamePieces(town);
-                town.gameLoopPacMan();
+                GameLogic pacManLevel = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
+                pacManLevel.pacMan();
+                indianaJones.setObstaclesforGamePieces(pacManLevel);
+                pacManLevel.snake.obstacles= pacManLevel.obstacles;
+                pacManLevel.jones.column= 20;
+                pacManLevel.gameLoopPacMan();
                 if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                     indianaJones.snakeWon = false;
                     indianaJones.levelSelector = 0;
