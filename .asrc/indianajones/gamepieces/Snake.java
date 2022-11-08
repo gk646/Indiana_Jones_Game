@@ -45,7 +45,13 @@ public class Snake extends GamePiece {
             }
         }
     }
-
+    public void movePacMan(){
+        if(!snakeCollisionLeft()){
+            column--;
+        }else if(!snakeCollisionDown()){
+            line++;
+        }
+    }
     public void moveHorizontal() {
         if (column >= 1) {
             column--;
@@ -56,7 +62,6 @@ public class Snake extends GamePiece {
         for (Obstacle obstacle : obstacles) {
             if (obstacle != null) {
                 if (line - 1 == obstacle.line && column == obstacle.column) {
-
                     return true;
 
                 }

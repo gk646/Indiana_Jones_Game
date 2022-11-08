@@ -296,7 +296,7 @@ public class IndianaJones {
                 GameLogic town = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
                 town.pacMan();
                 indianaJones.setObstaclesforGamePieces(town);
-                town.gameLoop();
+                town.gameLoopPacMan();
                 if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                     indianaJones.snakeWon = false;
                     indianaJones.levelSelector = 0;
