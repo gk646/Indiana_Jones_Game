@@ -1436,9 +1436,8 @@ public class GameView {
             } else {
                 if (clip.isActive()) {
                     // Possibly long runtime, but only when sound is simultaneously started
-                    int id = sound.hashCode() + (++soundCounter);
-                    new Thread(() -> createNewClipFromStoredBytesAndPlay(id, sound, replay)).start();
-                    return id;
+
+                    return 0;
                 } else {
                     // Very short runtime.
                     int id = sound.hashCode();
