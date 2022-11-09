@@ -174,7 +174,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 13;
+        indianaJones.levelSelector = 14;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -318,9 +318,12 @@ public class IndianaJones {
             else if (indianaJones.levelSelector == 14) {
                 screen.setWindowTitle("Indiana Jones Game- \"The Puzzle\"");
                 indianaJones.jonesWon = false;
+
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic puzzleLevel = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
                     puzzleLevel.puzzleObstacles();
+                    puzzleLevel.grail.line = 12;
+                    puzzleLevel.grail.column=24;
                     indianaJones.setObstaclesforGamePieces(puzzleLevel);
                     puzzleLevel.gameLoopPuzzle();
                     if (indianaJones.snakeWon && indianaJones.lifes < 1) {
@@ -331,7 +334,7 @@ public class IndianaJones {
                         if (!indianaJones.checkpoint4) {
                             Files.writeString(path, "\nYou have reached Checkpoint 4!", APPEND);
                         }
-                        indianaJones.levelSelector = 0;
+                        indianaJones.levelSelector = 15;
                     }
                 }
             }
@@ -398,10 +401,11 @@ public class IndianaJones {
                 }
                 if (indianaJones.checkpoint2) {
                     indianaJones.levelSelector = 13;
-
                 }
                 if (indianaJones.checkpoint3) {
                     indianaJones.levelSelector = 14;
+                }if(indianaJones.checkpoint4){
+                    indianaJones.levelSelector= 15;
                 }
             }
         }

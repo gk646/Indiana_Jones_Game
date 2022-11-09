@@ -526,8 +526,27 @@ public class GameLogic {
         boolean puzzle2 = false;
         boolean puzzle3 = false;
         boolean puzzle4 = false;
-        boolean puzzle5 = false;
-        obstacles[lines * columns - 1] = new Obstacle(13, 44);
+        boolean initialize = true;
+        obstacles[lines * columns - 1] = new Obstacle(10, 24);
+        obstacles[lines * columns - 2] = new Obstacle(12, 22);
+        obstacles[lines * columns - 3] = new Obstacle(12, 26);
+        obstacles[lines * columns - 4] = new Obstacle(14, 24);
+        String start= "Maybe these weird notes in the corners\n     can help me get to the grail!"+"\n".repeat(8)+"      Press ENTER to continue...";
+        for(int i =1; i < start.length();i++){
+            gameView.addTextToCanvas(start.substring(0,i),110,50,22,Color.white,0);
+            gameView.printCanvas();
+            Thread.sleep(15);
+        }
+        boolean stop = false;
+        while (!stop) {
+            Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
+            for (int keyCode : pressedKeys) {
+                if (keyCode == KeyEvent.VK_ENTER) {
+
+                    stop = true;
+                }
+            }
+        }
         while (!this.gameOver) {
 
             if (jones.line == 0 && jones.column == 47) {
@@ -599,10 +618,16 @@ public class GameLogic {
                     gameView.playSound("tone4.wav", false);
                 }
             }
-            if (jones.line == 13 && jones.column == 23 && puzzle4) {
-                obstacles[lines * columns - 1] = new Obstacle(3, 20);
+
+            if (puzzle4&&initialize) {
+                obstacles[lines * columns - 1] = new Obstacle(5, 16);
+                obstacles[lines * columns - 2] = new Obstacle(5, 16);
+                obstacles[lines * columns - 3] = new Obstacle(5, 16);
+                obstacles[lines * columns - 4] = new Obstacle(5, 16);
+                gameView.playSound("lockup.wav", false);
+                initialize=false;
             }
-            if (timepassed % 50 == 0 || timepassed == 0) {
+            if (timepassed % 30 == 0 || timepassed == 0) {
                 snakes[c] = new Snake(lines, columns, jones);
                 if (Math.random() > 0.5) {
                     snakes[c].line = 0;
@@ -637,7 +662,13 @@ public class GameLogic {
                     canvas.paint(obstacle.line, obstacle.column, obstacle.display);
                 }
             }
-            printHearts();
+            for (int i = 0; i < indianaJones.lifes; i++) {
+                canvas.paint(25, i, '\u2661');
+            }
+            canvas.paint(26,0,'\u266B');
+            canvas.paint(26,47,'\u266B');
+            canvas.paint(0,0,'\u266B');
+            canvas.paint(0,47,'\u266B');
             gameView.print(canvas.asString(), 22);
             gameLogic();
             sleep(tickspeed);
@@ -647,11 +678,27 @@ public class GameLogic {
     }
 
     public void gameLoopGunFight() throws InterruptedException {
-        Boss boss = new Boss(lines, columns, 13, 24, 2);
+        Boss boss = new Boss(lines, columns, 13, 24, 50);
         int timegone = 0;
         snakes = new Snake[201];
         int c = 0;
-
+        int wave1 = 0;
+        int wave2 = 0;
+        boolean stop = false;
+        String start= "Shoot with Arrow Keys!"+"\n".repeat(8)+"Press ENTER to continue...";
+        for(int i =1; i < start.length();i++){
+            gameView.addTextToCanvas(start.substring(0,i),270,50,22,Color.white,0);
+            gameView.printCanvas();
+            Thread.sleep(15);
+        }
+        while (!stop) {
+            Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
+            for (int keyCode : pressedKeys) {
+                if (keyCode == KeyEvent.VK_ENTER) {
+                    stop = true;
+                }
+            }
+        }
         while (!this.gameOver) {
             if (c >= 175) {
                 c = 0;
@@ -662,7 +709,7 @@ public class GameLogic {
             //gameView.playSound("megalovania.wav",false);
             escapeMenu();
             if (timegone < 50) {
-                gameView.addTextToCanvas("\"You will never kill me!\"", 350, 50, 22, Color.RED, 0);
+                gameView.addTextToCanvas("\"You will never kill me!\"", 280, 50, 22, Color.RED, 0);
             }
             if (timegone == 30) {
                 for (int i = 0; i < 25; i++) {
@@ -748,22 +795,8 @@ public class GameLogic {
                     }
                     c++;
                 }
-            } else if (timegone == 165) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
             } else if (timegone >= 160 && timegone < 210) {
-                gameView.addTextToCanvas("\"You survived only the beginning!\"\nNow comes the real challenge", 350, 50, 22, Color.RED, 0);
+                gameView.addTextToCanvas("\"You survived only the beginning!\"\n   Now comes the real challenge", 190, 50, 22, Color.RED, 0);
             } else if (timegone == 210) {
                 for (int i = 0; i < 20; i++) {
                     if (Math.random() > 0.5) {
@@ -778,7 +811,35 @@ public class GameLogic {
                     }
                     c++;
                 }
+            } else if (timegone == 220) {
+                for (int i = 0; i < 20; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
             } else if (timegone == 230) {
+                for (int i = 0; i < 20; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            } else if (timegone == 235) {
                 for (int i = 0; i < 20; i++) {
                     if (Math.random() > 0.5) {
                         snakes[c] = new Snake(lines, columns, jones);
@@ -861,19 +922,203 @@ public class GameLogic {
                         ;
                     }
                     c++;
+
+                }
+                if (timegone == 300) {
+                    c = 0;
                 }
             } else if (timegone > 300) {
                 jones.powerUpEnabled = true;
-            } else if (timegone >= 300 && timegone <= 340) {
-                gameView.addTextToCanvas("\"Now you will face everything i have!\"", 350, 50, 22, Color.RED, 0);
-            } else if (timegone >= 340 && timegone <= 450) {
-                gameView.addTextToCanvas("\"Now you will face everything i have!\"", 350, 50, 22, Color.RED, 0);
+            }
+            if (timegone >= 330 && timegone <= 370) {
+                gameView.addTextToCanvas("\"Now you will face everything i have!\"", 280, 50, 22, Color.RED, 0);
+                gameView.addTextToCanvas("Powerup enabled!", 320, 450, 23, Color.white, 0);
+            }
+            if (timegone >= 370 && timegone <= 530) {
+                if (snakes[c] != null) {
+                    if (wave1 <= 26) {
+                        wave2 = wave1;
+                    } else if (wave1 == 52) {
+                        wave1 = 0;
+                        wave2 = 0;
+                    } else {
+                        wave2--;
+                    }
+                    snakes[c].line = wave2;
+                    snakes[c].column = 47;
+
+                    wave1++;
+                    c++;
+                } else {
+                    snakes[c] = new Snake(lines, columns, jones);
+                    snakes[c].line = (int) (Math.random() * 27);
+                    snakes[c].column = 47;
+                    c++;
+                }
+            }
+            if (timegone == 520) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone == 535) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone == 550) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone >= 450 && timegone <= 650) {
+                if (snakes[c] != null) {
+                    if (wave1 <= 26) {
+                        wave2 = wave1;
+                    } else if (wave1 == 52) {
+                        wave1 = 0;
+                        wave2 = 0;
+                    } else {
+                        wave2--;
+                    }
+                    snakes[c].line = wave2;
+                    snakes[c].column = 47;
+
+                    wave1++;
+                    c++;
+                } else {
+                    snakes[c] = new Snake(lines, columns, jones);
+                    snakes[c].line = (int) (Math.random() * 27);
+                    snakes[c].column = 47;
+                    c++;
+                }
+            }
+            if (timegone == 620) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone == 645) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone == 660) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone == 680) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone == 690) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
             }
 
             if (boss.lifes == 0) {
                 indianaJones.jonesWon = true;
                 this.gameOver = true;
+                stop = false;
                 gameView.playSound("winsound.wav", false);
+                String ending = "You beat the game. Congratulations!" + "\n".repeat(2) + "Thank you for playing my first game" + "\n".repeat(6) + "You can delete the checkpoints.txt\nand start again!" + "\n\nPress ENTER to continue...";
+                for (int i = 1; i < ending.length(); i++) {
+                    gameView.addTextToCanvas(ending.substring(0, i), 120, 50, 25, Color.white, 0);
+                    gameView.printCanvas();
+                    Thread.sleep(50);
+                }
+                while (!stop) {
+                    Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
+                    for (int keyCode : pressedKeys) {
+                        if (keyCode == KeyEvent.VK_ENTER) {
+
+                            stop = true;
+                        }
+                    }
+                }
             }
             if (timegone % 5 == 0) {
                 Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
@@ -892,6 +1137,7 @@ public class GameLogic {
                         c++;
                     }
                 }
+                gameView.playSound("laserShoot.wave",false);
             }
             for (GamePiece gamePiece : gamePieces) {
                 gamePiece.move();
@@ -919,7 +1165,6 @@ public class GameLogic {
             }
             for (Snake snake : snakes) {
                 if (snake != null) {
-
                     canvas.paint(snake.line, snake.column, snake.display);
                     snake.moveHorizontal();
                 }
@@ -1004,20 +1249,38 @@ public class GameLogic {
     }
 
     public void levelSelect() {
+        // @formatter:off
+
         int[][] levelSelect = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                // @formatter:on
 
         };
         fillArray(levelSelect);
     }
 
     public void gunFight() {
-        int[][] array = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+        // @formatter:off
+
+        int[][] array = {
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+        // @formatter:on
+
         fillArray(array);
     }
 
     public void puzzleObstacles() {
+        // @formatter:on
         int[][] array = {
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1028,9 +1291,9 @@ public class GameLogic {
                 {0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
@@ -1045,6 +1308,8 @@ public class GameLogic {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
+        // @formatter:off
+
         fillArray(array);
     }
 
