@@ -177,7 +177,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 12;
+        indianaJones.levelSelector = 13;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -303,7 +303,7 @@ public class IndianaJones {
                     pacManLevel.pacMan();
                     indianaJones.setObstaclesforGamePieces(pacManLevel);
                     pacManLevel.snake.obstacles = pacManLevel.obstacles;
-                    pacManLevel.jones.column = 20;
+                    pacManLevel.jones.column = 18;
                     pacManLevel.gameLoopPacMan();
                     if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                         indianaJones.snakeWon = false;

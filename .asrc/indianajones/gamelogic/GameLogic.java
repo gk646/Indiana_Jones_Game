@@ -11,7 +11,7 @@ public class GameLogic {
     private final int lines;
     public int seed;
     public GameView gameView;
-    public Shooter[]shooters;
+    public Shooter[] shooters;
     public IndianaJones indianaJones;
     private final int columns;
     public int tickspeed;
@@ -105,6 +105,25 @@ public class GameLogic {
                 gameView.playSound("lostlife.wav", false);
             } else {
                 gameView.playSound("bigloss.wav", false);
+            }
+            indianaJones.lifes--;
+        }
+    }
+
+    public void gameLogicPacMan() {
+        if (this.jones.gotGrail && jonesIsOnTheSameSpotAs(this.exit)) {
+            gameView.print(canvas.asString(), 22);
+            indianaJones.jonesWon = true;
+            this.gameOver = true;
+            gameView.playSound("winsound.wav", false);
+        } else if (snakeGotJones()) {
+            gameView.print(canvas.asString(), 22);
+            indianaJones.snakeWon = true;
+            this.gameOver = true;
+            if (indianaJones.lifes >= 2) {
+                gameView.playSound("pacman_death.wav", false);
+            } else {
+                gameView.playSound("pacman_death.wav", false);
             }
             indianaJones.lifes--;
         }
@@ -412,21 +431,67 @@ public class GameLogic {
 
     public void gameLoopPacMan() throws InterruptedException {
         this.snakes = new Snake[4];
+        int jonesgrails = 0;
         boolean initialize = true;
+        grail.display = ' ';
+        grail.line = 14;
+        jones.isPacMan = true;
+        grail.column = 45;
+        obstacles[585] = new Obstacle(13, 46);
+        Grail[] grails = new Grail[4];
+
+
         while (!this.gameOver) {
-            if (jones.column >= 20 && initialize) {
+            if (jonesgrails == 4) {
+                obstacles[585] = new Obstacle(14, 46);
+                jones.gotGrail = true;
+            }
+            if (jones.column >= 26 && initialize) {
                 for (int i = 0; i < snakes.length; i++) {
+                    gameView.playSound("pacman_beginning.wav", false);
+                    obstacles[1] = new Obstacle(13, 21);
                     snakes[i] = new Snake(lines, columns, jones);
                     snakes[i].line = 10;
                     snakes[i].column = 34;
+                    grails[0] = new Grail(lines, columns);
+                    grails[1] = new Grail(lines, columns);
+                    grails[2] = new Grail(lines, columns);
+                    grails[3] = new Grail(lines, columns);
+                    grails[0].line = 0;
+                    grails[0].column = 22;
+                    grails[1].line = 0;
+                    grails[1].column = 47;
+                    grails[2].line = 25;
+                    grails[2].column = 24;
+                    grails[3].line = 25;
+                    grails[3].column = 45;
                 }
                 for (Snake snake : snakes) {
                     snake.obstacles = obstacles;
                 }
                 initialize = false;
             }
+
+            for (Grail grail : grails) {
+                if (grail != null) {
+                    if (jonesIsOnTheSameSpotAs(grail) && !jones.gotGrail) {
+                        gameView.playSound("pacman_eatghost.wav", false);
+                        grail.invisible();
+                        grail.line = 12;
+                        grail.column = 45;
+                        jonesgrails++;
+
+
+                    }
+                }
+            }
             this.canvas.fill(' ');
             escapeMenu();
+            for (Grail grail : grails) {
+                if (grail != null) {
+                    canvas.paint(grail.line, grail.column, '\u25CC');
+                }
+            }
             for (GamePiece gamePiece : gamePieces) {
                 gamePiece.move();
                 canvas.paint(gamePiece.line, gamePiece.column, gamePiece.display);
@@ -445,9 +510,10 @@ public class GameLogic {
             }
             printHearts();
             gameView.print(canvas.asString(), 22);
-            gameLogic();
+            gameLogicPacMan();
             sleep(tickspeed);
         }
+        jones.isPacMan = false;
         sleep(500);
     }
 
