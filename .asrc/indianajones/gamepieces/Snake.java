@@ -46,6 +46,39 @@ public class Snake extends GamePiece {
         }
     }
 
+    public void movePuzzle() {
+        if (Math.random() > 0.8) {
+            if (Math.random() > 0.5) {
+                if ((jones.getLine() - line > 0) && !snakeCollisionDown()) {
+                    line++;
+                    display = '\u2240';
+
+                }
+                if ((jones.getLine() - line) < 0) {
+                    if (snakeCollisionUp()) {
+                    } else {
+                        line--;
+                        display = '\u2240';
+                    }
+                }
+            } else {
+                if ((jones.getColumn() - column) < 0) {
+                    if (snakeCollisionLeft()) {
+                    } else {
+                        column--;
+                        display = '\u223D';
+                    }
+                } else if ((jones.getColumn() - column) > 0) {
+                    if (snakeCollisionRight()) {
+                    } else {
+                        column++;
+                        display = '\u223D';
+                    }
+                }
+            }
+        }
+    }
+
     public boolean jonesIsAbove() {
         return jones.getLine() - line < 0;
     }

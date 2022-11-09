@@ -55,7 +55,7 @@ public class Jones extends GamePiece {
                 } else {
                     column -= 1;
                 }
-            }if (keyCode == KeyEvent.VK_D) {
+            }else if (keyCode == KeyEvent.VK_D) {
                 if (column + 1 > columns - 1 || jonesAgainstObstacleRight()) {
                 } else {
                     column += 1;
