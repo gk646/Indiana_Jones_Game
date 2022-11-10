@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Indiana_Jones_Game:jar">
-    <output-path>$USER_HOME$/Desktop</output-path>
-    <root id="archive" name="Indiana_Jones_Game.jar">
-      <element id="module-output" name="Indiana_Jones_Game" />
-    </root>
-  </artifact>
-</component>
