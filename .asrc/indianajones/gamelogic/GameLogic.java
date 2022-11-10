@@ -678,7 +678,7 @@ public class GameLogic {
     }
 
     public void gameLoopGunFight() throws InterruptedException {
-        Boss boss = new Boss(lines, columns, 13, 24, 50);
+        Boss boss = new Boss(lines, columns, 13, 24, 100);
         int timegone = 0;
         snakes = new Snake[201];
         int c = 0;
@@ -691,6 +691,7 @@ public class GameLogic {
             gameView.printCanvas();
             Thread.sleep(15);
         }
+        gameView.playSound("megalovania.wav",false);
         while (!stop) {
             Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
             for (int keyCode : pressedKeys) {
@@ -699,6 +700,7 @@ public class GameLogic {
                 }
             }
         }
+
         while (!this.gameOver) {
             if (c >= 175) {
                 c = 0;
@@ -706,8 +708,9 @@ public class GameLogic {
             this.canvas.fill(' ');
             gameView.addTextToCanvas("Boss Health: " + boss.lifes, 730, 530, 19, Color.RED, 0);
             printHearts();
-            //gameView.playSound("megalovania.wav",false);
+
             escapeMenu();
+
             if (timegone < 50) {
                 gameView.addTextToCanvas("\"You will never kill me!\"", 280, 50, 22, Color.RED, 0);
             }
@@ -931,7 +934,7 @@ public class GameLogic {
                 jones.powerUpEnabled = true;
             }
             if (timegone >= 330 && timegone <= 370) {
-                gameView.addTextToCanvas("\"Now you will face everything i have!\"", 280, 50, 22, Color.RED, 0);
+                gameView.addTextToCanvas("\"Now you will face everything i have!\"", 180, 50, 22, Color.RED, 0);
                 gameView.addTextToCanvas("Powerup enabled!", 320, 450, 23, Color.white, 0);
             }
             if (timegone >= 370 && timegone <= 530) {
@@ -971,21 +974,6 @@ public class GameLogic {
                     c++;
                 }
             }
-            if (timegone == 535) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            }
             if (timegone == 550) {
                 for (int i = 0; i < 25; i++) {
                     if (Math.random() > 0.5) {
@@ -1001,7 +989,22 @@ public class GameLogic {
                     c++;
                 }
             }
-            if (timegone >= 450 && timegone <= 650) {
+            if (timegone == 570) {
+                for (int i = 0; i < 25; i++) {
+                    if (Math.random() > 0.5) {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 26);
+                        snakes[c].column = 47;
+                    } else {
+                        snakes[c] = new SnakeDown(lines, columns, jones);
+                        snakes[c].line = 1;
+                        snakes[c].column = (int) (Math.random() * 47);
+                        ;
+                    }
+                    c++;
+                }
+            }
+            if (timegone >= 550 && timegone <= 650) {
                 if (snakes[c] != null) {
                     if (wave1 <= 26) {
                         wave2 = wave1;
@@ -1125,19 +1128,23 @@ public class GameLogic {
                 for (int keyCode : pressedKeys) {
                     if (keyCode == KeyEvent.VK_UP) {
                         bullets[c] = new BulletUp(jones.line, jones.column);
+                        gameView.playSound("laserShoot.wav",false);
                         c++;
                     } else if (keyCode == KeyEvent.VK_DOWN) {
                         bullets[c] = new BulletDown(jones.line, jones.column);
+                        gameView.playSound("laserShoot.wav",false);
                         c++;
                     } else if (keyCode == KeyEvent.VK_LEFT) {
                         bullets[c] = new BulletLeft(jones.line, jones.column);
+                        gameView.playSound("laserShoot.wav",false);
                         c++;
                     } else if (keyCode == KeyEvent.VK_RIGHT) {
                         bullets[c] = new BulletRight(jones.line, jones.column);
+                        gameView.playSound("laserShoot.wav",false);
                         c++;
                     }
                 }
-                gameView.playSound("laserShoot.wave",false);
+
             }
             for (GamePiece gamePiece : gamePieces) {
                 gamePiece.move();
@@ -1176,6 +1183,7 @@ public class GameLogic {
             timegone++;
         }
         sleep(500);
+        gameView.stopAllSounds();
     }
 
     public void fillArray(int[][] array) {
