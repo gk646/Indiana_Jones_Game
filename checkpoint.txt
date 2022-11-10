@@ -1,0 +1,3 @@
+This is the .txt for the Indiana Jones Game.
+Please keep it in the same directory as the game file (.jar)
+You have reached the following checkpoints: 
