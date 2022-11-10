@@ -1,7 +1,7 @@
 # Indiana_Jones_Game
 My own modified version of an Indiana Jones Game, based on a assignment from coding class. 
 
-**Credit to Toby Fox for "Megalovania"-Soundtrack**  
+**Credit to Toby Fox for "Megalovania"-Soundtrack Support him here: https://materia.to/undertaleID **  
 **Credit to 8BitUzz for translating "Flight of Bumblebee" to 8bit style**  
 **The GameView class was not made by me! Credit to my professor.**  
 
