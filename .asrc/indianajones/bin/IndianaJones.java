@@ -174,7 +174,7 @@ public class IndianaJones {
     public static void main(String[] args) throws InterruptedException, IOException {
         IndianaJones indianaJones = new IndianaJones();
         indianaJones.lifes = 3;
-        indianaJones.levelSelector = 14;
+        indianaJones.levelSelector = -1;
         indianaJones.snakeWon = false;
         indianaJones.jonesWon = false;
         int lines = 27;
@@ -356,9 +356,10 @@ public class IndianaJones {
                     if (indianaJones.snakeWon && indianaJones.lifes < 1) {
                         indianaJones.snakeWon = false;
                         indianaJones.levelSelector = 0;
+                        shootout.gameView.stopAllSounds();
                     }
                     if (indianaJones.jonesWon) {
-                        if (!indianaJones.checkpoint4) {
+                        if (indianaJones.checkpoint4) {
                             Files.writeString(path, "\nYou have finished the game!\nCongratulations and thanks for playing", APPEND);
                         }
                         indianaJones.levelSelector = 0;
