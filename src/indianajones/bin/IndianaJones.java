@@ -29,7 +29,8 @@ public class IndianaJones {
     public void waitForEnterAndFlashingText(GameView gameView) throws InterruptedException {
         String Continue = "  Press Enter to continue...";
         String jones = "  Welcome to the Indiana Jones Game\n";
-        String gameInfo = "  Catch the Grail (G) and escape the snakes (S) ";
+        String gameInfo = " ".repeat(2)+"Catch the Grail (G) and escape the snakes (S)\n\n"+" ".repeat(9)+"Credit to Toby Fox for \"Megalovania\"\n\n" +" ".repeat(7)+"Credit to 8BitUzz for makina 8bit Style\n"+" ".repeat(12)+"\"Flight of the Bumblebee\"" +
+                "\n\n\n"+" ".repeat(5)+"Credit to Andreas Berl for the GameView class";
         int lines = 27;
         boolean stop = true;
         int ib = 0;
@@ -47,7 +48,7 @@ public class IndianaJones {
             gameView.addTextToCanvas("\n".repeat(lines / 4) + " ".repeat(6) + jones, 0, 0,
                     20, Color.blue, 0);
             gameView.addTextToCanvas("\n".repeat(8) + " ".repeat(2) + gameInfo, 0, 0, 20, Color.blue, 0);
-            gameView.addTextToCanvas("\n".repeat(10) + " ".repeat(10) + Continue, 0, 0, 20, Color.blue, 0);
+            gameView.addTextToCanvas("\n".repeat(19) + " ".repeat(10) + Continue, 0, 0, 20, Color.blue, 0);
             gameView.printCanvas();
             Thread.sleep(100);
             ib++;
@@ -95,10 +96,11 @@ public class IndianaJones {
             gameView.addTextToCanvas("\n".repeat(lines / 4) + " ".repeat(6) + jones.substring(0, 1 + i), 0, 0, 20, Color.blue, 0);
             gameView.printCanvas();
             gameView.playSound("synth1.wav", false);
-            Thread.sleep(75);
+            Thread.sleep(50);
 
         }
-        String gameInfo = "  Catch the Grail (G) and escape the snakes (S) ";
+        String gameInfo = " ".repeat(2)+"Catch the Grail (G) and escape the snakes (S)\n\n"+" ".repeat(9)+"Credit to Toby Fox for \"Megalovania\"\n\n" +" ".repeat(7)+"Credit to 8BitUzz for makina 8bit Style\n"+" ".repeat(12)+"\"Flight of the Bumblebee\"" +
+                "\n\n\n"+" ".repeat(5)+"Credit to Andreas Berl for the GameView class";
         c = 0;
         Thread.sleep(100);
         for (int i = 0; i <= gameInfo.length() - 1; i++) {
@@ -109,24 +111,8 @@ public class IndianaJones {
             gameView.addTextToCanvas("\n".repeat(8) + " ".repeat(2) + gameInfo.substring(0, 1 + i), 0, 0, 20, Color.blue, 0);
             gameView.printCanvas();
             gameView.playSound("synth1.wav", false);
-            Thread.sleep(75);
+            Thread.sleep(50);
         }
-        c = 0;
-        Thread.sleep(100);
-        String Continue = "  Press Enter to continue...";
-        for (int i = 0; i <= Continue.length() - 1; i++) {
-            gameView.addTextToCanvas(" ".repeat(4) + " Indiana Jones", 0, 0, 46, Color.orange, 0);
-            gameView.addTextToCanvas("\n".repeat(lines / 4) + " ".repeat(6) + jones, 0, 0,
-                    20, Color.blue, 0);
-            gameView.addTextToCanvas("\n".repeat(8) + " ".repeat(2) + gameInfo, 0, 0, 20, Color.blue, 0);
-            gameView.addTextToCanvas("\n".repeat(10) + " ".repeat(10) + Continue.substring(0, c++), 0, 0, 20, Color.blue, 0);
-            gameView.addTextToCanvas("\n".repeat(10) + " ".repeat(10) + Continue.substring(0, 1 + i), 0, 0, 20, Color.blue, 0);
-            gameView.printCanvas();
-            gameView.playSound("synth1.wav", false);
-            Thread.sleep(75);
-        }
-
-
         waitForEnterAndFlashingText(gameView);
         indianaJones.levelSelector = 0;
     }

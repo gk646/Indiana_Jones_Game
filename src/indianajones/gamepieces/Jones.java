@@ -32,7 +32,6 @@ public class Jones extends GamePiece {
     public void move() {
         Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
         for (int keyCode : pressedKeys) {
-
             if (keyCode == KeyEvent.VK_SPACE && powerUpEnabled) {
                 if(column+6<columns) {
                     column += 6;
