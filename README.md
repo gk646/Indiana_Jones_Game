@@ -1,7 +1,9 @@
 # Indiana_Jones_Game
 My own modified version of an Indiana Jones Game, based on a assignment from coding class. 
 
-**The GameView class was not made by me! Credit to my professor.**
+**Credit to Toby Fox for "Megalovania"-Soundtrack**  
+**Credit to 8BitUzz for translating "Flight of Bumblebee" to 8bit style**  
+**The GameView class was not made by me! Credit to my professor.**  
 
 
 How to play:   
@@ -18,7 +20,7 @@ Level 5: Boss fight time. Shoot the boss and dodge the snakes!
 
 
 
-**If you can progress a level (some are not easy), you can copy and paste the checkpoints into the .txt(Checkpoint 1 for Level 2...):**
+**If you cant progress a level (some are not easy), you can copy and paste the checkpoints into the .txt(Checkpoint 1 for Level 2...):**
 
 You have reached Checkpoint 1!  
 You have reached Checkpoint 2!  
