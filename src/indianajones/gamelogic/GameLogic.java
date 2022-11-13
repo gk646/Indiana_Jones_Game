@@ -143,14 +143,13 @@ public class GameLogic {
             if (keyCode == KeyEvent.VK_ESCAPE) {
                 boolean stop = false;
                 gameView.playSound("menuback.wav", false);
+                sleep(110);
                 while (!stop) {
-                    //todo maybe flashing yes and no my / switch a and d confirm with enter
                     gameView.addTextToCanvas("\n".repeat(2) + " ".repeat(18) + "Back to menu?", 0, 0, 22, Color.white, 0);
                     gameView.addTextToCanvas(" ".repeat(8) + "\"ESC\"\n" + " ".repeat(5) + "to continue", 100, 200, 22, Color.white, 0);
                     gameView.addTextToCanvas(" ".repeat(6) + "\"ENTER\"\n" + " ".repeat(4) + "to confirm", 520, 200, 22, Color.white, 0);
                     gameView.addTextToCanvas("Game paused!", 380, 450, 26, Color.white, 0);
                     gameView.printCanvas();
-                    Thread.sleep(125);
                     Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
                     for (int keypress : pressedKeys1) {
                         if (keypress == KeyEvent.VK_ENTER) {
@@ -159,16 +158,18 @@ public class GameLogic {
                             indianaJones.snakeWon = true;
                             indianaJones.levelSelector = 0;
                             stop = true;
-
                         } else if (keypress == KeyEvent.VK_ESCAPE) {
                             stop = true;
+                            Thread.sleep(125);
                         }
                     }
+
 
                 }
             }
         }
     }
+
 
     public void gameLoop() throws InterruptedException {
         while (!this.gameOver) {
@@ -201,104 +202,113 @@ public class GameLogic {
         int counter1 = 0;
         exit.display = ' ';
         gameView.playSound("bumblebeekorsakov.wav", false);
+        long time = 0;
+        long time2 = 0;
+        long delta = 0;
         while (!this.gameOver) {
+            time = System.currentTimeMillis();
             this.canvas.fill(' ');
-            escapeMenu();
-            if (timegone == 300) {
-                String powerup = "Press \"SPACE\" to teleport 6 fields\n" + " ".repeat(10) + "to the front\n";
-                for (int i = 1; i < powerup.length(); i++) {
-                    gameView.addTextToCanvas("Powerup enabled!", 320, 50, 26, Color.white, 0);
-                    gameView.addTextToCanvas(powerup.substring(0, i), 150, 200, 22, Color.white, 0);
-                    gameView.printCanvas();
-                    Thread.sleep(50);
-                }
-                boolean stop = false;
-                while (!stop) {
-                    gameView.addTextToCanvas("Powerup enabled!", 320, 50, 26, Color.white, 0);
-                    gameView.addTextToCanvas(powerup, 150, 200, 22, Color.white, 0);
-                    gameView.addTextToCanvas("Press \"ENTER\" to contine!", 230, 400, 25, Color.white, 0);
-                    gameView.printCanvas();
-                    Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
-                    for (int keypress : pressedKeys1) {
+            gameLogic();
+            if (delta >= 100) {
+                if (timegone == 300) {
+                    String powerup = "Press \"SPACE\" to teleport 6 fields\n" + " ".repeat(10) + "to the front\n";
+                    for (int i = 1; i < powerup.length(); i++) {
+                        gameView.addTextToCanvas("Powerup enabled!", 320, 50, 26, Color.white, 0);
+                        gameView.addTextToCanvas(powerup.substring(0, i), 150, 200, 22, Color.white, 0);
+                        gameView.printCanvas();
+                        Thread.sleep(50);
+                    }
+                    boolean stop = false;
+                    while (!stop) {
+                        gameView.addTextToCanvas("Powerup enabled!", 320, 50, 26, Color.white, 0);
+                        gameView.addTextToCanvas(powerup, 150, 200, 22, Color.white, 0);
+                        gameView.addTextToCanvas("Press \"ENTER\" to contine!", 230, 400, 25, Color.white, 0);
+                        gameView.printCanvas();
+                        Integer[] pressedKeys1 = gameView.getKeyCodesOfCurrentlyPressedKeys();
+                        for (int keypress : pressedKeys1) {
 
-                        if (keypress == KeyEvent.VK_ENTER) {
-                            stop = true;
+                            if (keypress == KeyEvent.VK_ENTER) {
+                                stop = true;
+                            }
+                        }
+
+                    }
+                    jones.powerUpEnabled = true;
+                }
+                if (timegone >= 600) {
+                    if (jones.gotGrail) {
+                        grail.invisible();
+                    } else {
+                        grail.line = 13;
+                        grail.column = 40;
+                        grail.display = '\u269A';
+                        exit.display = 'E';
+                    }
+                    for (Snake snake : snakes) {
+                        if (snake != null && snake.column <= 2) {
+                            snake.display = ' ';
+                            snake.line = 0;
+                            snake.column = 46;
+                        } else if (snake != null && snake.column < 46) {
+                            canvas.paint(snake.line, snake.column, snake.display);
+                            snake.moveHorizontal();
+                        } else if (snake != null && snake.line != 0) {
+                            snake.line = 0;
                         }
                     }
-
                 }
-                jones.powerUpEnabled = true;
-            }
-            if (timegone >= 600) {
-                if (jones.gotGrail) {
-                    grail.invisible();
-                } else {
-                    grail.line = 13;
-                    grail.column = 40;
-                    grail.display = '\u269A';
-                    exit.display = 'E';
+                if (arraylength < 65) {
+                    snakes[arraylength] = new Snake((int) (Math.random() * 27), 47, jones);
+                    arraylength++;
                 }
-                for (Snake snake : snakes) {
-                    if (snake != null && snake.column <= 2) {
-                        snake.display = ' ';
-                        snake.line = 0;
-                        snake.column = 46;
-                    } else if (snake != null && snake.column < 46) {
-                        canvas.paint(snake.line, snake.column, snake.display);
-                        snake.moveHorizontal();
-                    } else if (snake != null && snake.line != 0) {
-                        snake.line = 0;
+                if (timegone > 350 && timegone < 600) {
+                    if (snakes[counter1] != null) {
+                        if (wave1 <= 26) {
+                            wave2 = wave1;
+                        } else if (wave1 == 52) {
+                            wave1 = 0;
+                            wave2 = 0;
+                        } else {
+                            wave2--;
+                        }
+                        snakes[counter1].line = wave2;
+                        snakes[counter1].column = 47;
+                        wave1++;
+                        if (counter1 < 65 - 1) {
+                            counter1++;
+                        } else {
+                            counter1 = 0;
+                        }
                     }
                 }
-            }
-            if (arraylength < 65) {
-                snakes[arraylength] = new Snake((int) (Math.random() * 27), 47, jones);
-                arraylength++;
-            }
-            if (timegone > 350 && timegone < 600) {
-                if (snakes[counter1] != null) {
-                    if (wave1 <= 26) {
-                        wave2 = wave1;
-                    } else if (wave1 == 52) {
-                        wave1 = 0;
-                        wave2 = 0;
-                    } else {
-                        wave2--;
-                    }
-                    snakes[counter1].line = wave2;
-                    snakes[counter1].column = 47;
-                    wave1++;
-                    if (counter1 < 65 - 1) {
-                        counter1++;
-                    } else {
-                        counter1 = 0;
+                for (GamePiece gamePiece : gamePieces) {
+                    if (gamePiece != null) {
+                        gamePiece.move();
+                        canvas.paint(gamePiece.line, gamePiece.column, gamePiece.display);
                     }
                 }
-            }
-            if (timegone < 600) {
-                for (Snake snake : snakes) {
-                    if (snake != null && snake.column > 0) {
-                        snake.moveHorizontal();
-                        canvas.paint(snake.line, snake.column, snake.display);
-                    } else if (snake != null && snake.column == 0) {
-                        snake.column = 47;
-                        snake.line = (int) (Math.random() * 27);
+                if (timegone < 600) {
+                    for (Snake snake : snakes) {
+                        if (snake != null && snake.column > 0) {
+                            snake.moveHorizontal();
+                            canvas.paint(snake.line, snake.column, snake.display);
+                        } else if (snake != null && snake.column == 0) {
+                            snake.column = 47;
+                            snake.line = (int) (Math.random() * 27);
+                        }
                     }
                 }
+                printHearts();
+                gameView.print(canvas.asString(), 22);
+                delta = 0;
+                timegone++;
+                escapeMenu();
             }
-            for (GamePiece gamePiece : gamePieces) {
-                if (gamePiece != null) {
-                    gamePiece.move();
-                    canvas.paint(gamePiece.line, gamePiece.column, gamePiece.display);
-                }
-            }
-            printHearts();
-            gameView.print(canvas.asString(), 22);
-            gameLogic();
-            sleep(120 - timegone / 15);
-            timegone++;
+            Thread.sleep(10);
+            time2 = System.currentTimeMillis();
+            delta = time2 - time + delta;
         }
-        //todo proper transition screens
+
         sleep(500);
         gameView.stopAllSounds();
         jones.powerUpEnabled = false;
@@ -531,9 +541,9 @@ public class GameLogic {
         obstacles[lines * columns - 2] = new Obstacle(12, 22);
         obstacles[lines * columns - 3] = new Obstacle(12, 26);
         obstacles[lines * columns - 4] = new Obstacle(14, 24);
-        String start= "Maybe these weird notes in the corners\n     can help me get to the grail!"+"\n".repeat(8)+"      Press ENTER to continue...";
-        for(int i =1; i < start.length();i++){
-            gameView.addTextToCanvas(start.substring(0,i),110,50,22,Color.white,0);
+        String start = "Maybe these weird notes in the corners\n     can help me get to the grail!" + "\n".repeat(8) + "      Press ENTER to continue...";
+        for (int i = 1; i < start.length(); i++) {
+            gameView.addTextToCanvas(start.substring(0, i), 110, 50, 22, Color.white, 0);
             gameView.printCanvas();
             Thread.sleep(15);
         }
@@ -619,13 +629,13 @@ public class GameLogic {
                 }
             }
 
-            if (puzzle4&&initialize) {
+            if (puzzle4 && initialize) {
                 obstacles[lines * columns - 1] = new Obstacle(5, 16);
                 obstacles[lines * columns - 2] = new Obstacle(5, 16);
                 obstacles[lines * columns - 3] = new Obstacle(5, 16);
                 obstacles[lines * columns - 4] = new Obstacle(5, 16);
                 gameView.playSound("lockup.wav", false);
-                initialize=false;
+                initialize = false;
             }
             if (timepassed % 30 == 0 || timepassed == 0) {
                 snakes[c] = new Snake(lines, columns, jones);
@@ -665,10 +675,10 @@ public class GameLogic {
             for (int i = 0; i < indianaJones.lifes; i++) {
                 canvas.paint(25, i, '\u2661');
             }
-            canvas.paint(26,0,'\u266B');
-            canvas.paint(26,47,'\u266B');
-            canvas.paint(0,0,'\u266B');
-            canvas.paint(0,47,'\u266B');
+            canvas.paint(26, 0, '\u266B');
+            canvas.paint(26, 47, '\u266B');
+            canvas.paint(0, 0, '\u266B');
+            canvas.paint(0, 47, '\u266B');
             gameView.print(canvas.asString(), 22);
             gameLogic();
             sleep(tickspeed);
@@ -679,19 +689,22 @@ public class GameLogic {
 
     public void gameLoopGunFight() throws InterruptedException {
         Boss boss = new Boss(lines, columns, 13, 24, 100);
-        int timegone = 0;
+        int timegone = 150;
         snakes = new Snake[201];
         int c = 0;
         int wave1 = 0;
         int wave2 = 0;
         boolean stop = false;
-        String start= "Shoot with Arrow Keys!"+"\n".repeat(8)+"Press ENTER to continue...";
-        for(int i =1; i < start.length();i++){
-            gameView.addTextToCanvas(start.substring(0,i),270,50,22,Color.white,0);
+        String start = "Shoot with Arrow Keys!" + "\n".repeat(8) + "Press ENTER to continue...";
+        for (int i = 1; i < start.length(); i++) {
+            gameView.addTextToCanvas(start.substring(0, i), 270, 50, 22, Color.white, 0);
             gameView.printCanvas();
             Thread.sleep(15);
         }
-        gameView.playSound("megalovania.wav",false);
+        gameView.playSound("megalovania.wav", false);
+        long time = 0;
+        long time1 = 0;
+        long delta = 0;
         while (!stop) {
             Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
             for (int keyCode : pressedKeys) {
@@ -702,530 +715,550 @@ public class GameLogic {
         }
 
         while (!this.gameOver) {
-            if (c >= 175) {
-                c = 0;
-            }
-            this.canvas.fill(' ');
-            gameView.addTextToCanvas("Boss Health: " + boss.lifes, 730, 530, 19, Color.RED, 0);
-            printHearts();
-            escapeMenu();
-            if (timegone < 50) {
-                gameView.addTextToCanvas("\"You will never kill me!\"", 280, 50, 22, Color.RED, 0);
-            }
-            if (timegone == 30) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 65) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 85) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 105) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 125) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 145) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone >= 160 && timegone < 210) {
-                gameView.addTextToCanvas("\"You survived only the beginning!\"\n   Now comes the real challenge", 190, 50, 22, Color.RED, 0);
-            } else if (timegone == 210) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 220) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 230) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 235) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 245) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 260) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 280) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 290) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            } else if (timegone == 300) {
-                for (int i = 0; i < 20; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
+            time = System.currentTimeMillis();
+            if (delta >= 100) {
 
-                }
-                if (timegone == 300) {
+
+                if (c >= 175) {
                     c = 0;
                 }
-            } else if (timegone > 300) {
-                jones.powerUpEnabled = true;
-            }
-            if (timegone >= 330 && timegone <= 370) {
-                gameView.addTextToCanvas("\"Now you will face everything i have!\"", 180, 50, 22, Color.RED, 0);
-                gameView.addTextToCanvas("Powerup enabled!", 320, 450, 23, Color.white, 0);
-            }
-            if (timegone >= 370 && timegone <= 530) {
-                if (snakes[c] != null) {
-                    if (wave1 <= 26) {
-                        wave2 = wave1;
-                    } else if (wave1 == 52) {
-                        wave1 = 0;
-                        wave2 = 0;
-                    } else {
-                        wave2--;
-                    }
-                    snakes[c].line = wave2;
-                    snakes[c].column = 47;
 
-                    wave1++;
-                    c++;
-                } else {
-                    snakes[c] = new Snake(lines, columns, jones);
-                    snakes[c].line = (int) (Math.random() * 27);
-                    snakes[c].column = 47;
-                    c++;
-                }
-            }
-            if (timegone == 520) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
+                if (timegone == 30) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
                     }
-                    c++;
-                }
-            }
-            if (timegone == 550) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
+                } else if (timegone == 65) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
                     }
-                    c++;
-                }
-            }
-            if (timegone == 570) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
+                } else if (timegone == 85) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
                     }
-                    c++;
-                }
-            }
-            if (timegone >= 550 && timegone <= 700) {
-                if (snakes[c] != null) {
-                    if (wave1 <= 26) {
-                        wave2 = wave1;
-                    } else if (wave1 == 52) {
-                        wave1 = 0;
-                        wave2 = 0;
-                    } else {
-                        wave2--;
+                } else if (timegone == 105) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
                     }
-                    snakes[c].line = wave2;
-                    snakes[c].column = 47;
+                } else if (timegone == 125) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 145) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 210) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 220) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 230) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 235) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 245) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 260) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 280) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 290) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                } else if (timegone == 300) {
+                    for (int i = 0; i < 20; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
 
-                    wave1++;
-                    c++;
-                } else {
-                    snakes[c] = new Snake(lines, columns, jones);
-                    snakes[c].line = (int) (Math.random() * 27);
-                    snakes[c].column = 47;
-                    c++;
-                }
-            }
-            if (timegone == 620) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
                     }
-                    c++;
-                }
-            }
-            if (timegone == 645) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
+                    if (timegone == 300) {
+                        c = 0;
                     }
-                    c++;
+                } else if (timegone > 300) {
+                    jones.powerUpEnabled = true;
                 }
-            }
-            if (timegone == 660) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            }
-            if (timegone == 680) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            }
-            if (timegone == 685) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            }
-            if (timegone == 695) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            }
-            if (timegone == 700) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            }
-            if (timegone == 710) {
-                for (int i = 0; i < 25; i++) {
-                    if (Math.random() > 0.5) {
-                        snakes[c] = new Snake(lines, columns, jones);
-                        snakes[c].line = (int) (Math.random() * 26);
-                        snakes[c].column = 47;
-                    } else {
-                        snakes[c] = new SnakeDown(lines, columns, jones);
-                        snakes[c].line = 1;
-                        snakes[c].column = (int) (Math.random() * 47);
-                        ;
-                    }
-                    c++;
-                }
-            }
-            if(timegone>= 730&& timegone<= 760){
-                gameView.addTextToCanvas("If you survived that long, you desserve to win",190,50,22,Color.white,0);
-            }
-            if (boss.lifes == 0) {
-                indianaJones.jonesWon = true;
-                this.gameOver = true;
-                stop = false;
-                gameView.playSound("winsound.wav", false);
-                String ending = "You beat the game. Congratulations!" + "\n".repeat(2) + "Thank you for playing my first game" + "\n".repeat(6) + "You can delete the checkpoints.txt\nand start again!" + "\n\nPress ENTER to continue...";
-                for (int i = 1; i < ending.length(); i++) {
-                    gameView.addTextToCanvas(ending.substring(0, i), 120, 50, 25, Color.white, 0);
-                    gameView.printCanvas();
-                    Thread.sleep(50);
-                }
-                while (!stop) {
-                    Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
-                    for (int keyCode : pressedKeys) {
-                        if (keyCode == KeyEvent.VK_ENTER) {
 
-                            stop = true;
+                if (timegone >= 370 && timegone <= 530) {
+                    if (snakes[c] != null) {
+                        if (wave1 <= 26) {
+                            wave2 = wave1;
+                        } else if (wave1 == 52) {
+                            wave1 = 0;
+                            wave2 = 0;
+                        } else {
+                            wave2--;
+                        }
+                        snakes[c].line = wave2;
+                        snakes[c].column = 47;
+
+                        wave1++;
+                        c++;
+                    } else {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 27);
+                        snakes[c].column = 47;
+                        c++;
+                    }
+                }
+                if (timegone == 520) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 550) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 570) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone >= 550 && timegone <= 700) {
+                    if (snakes[c] != null) {
+                        if (wave1 <= 26) {
+                            wave2 = wave1;
+                        } else if (wave1 == 52) {
+                            wave1 = 0;
+                            wave2 = 0;
+                        } else {
+                            wave2--;
+                        }
+                        snakes[c].line = wave2;
+                        snakes[c].column = 47;
+
+                        wave1++;
+                        c++;
+                    } else {
+                        snakes[c] = new Snake(lines, columns, jones);
+                        snakes[c].line = (int) (Math.random() * 27);
+                        snakes[c].column = 47;
+                        c++;
+                    }
+                }
+                if (timegone == 620) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 645) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 660) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 680) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 685) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 695) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 700) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone == 710) {
+                    for (int i = 0; i < 25; i++) {
+                        if (Math.random() > 0.5) {
+                            snakes[c] = new Snake(lines, columns, jones);
+                            snakes[c].line = (int) (Math.random() * 26);
+                            snakes[c].column = 47;
+                        } else {
+                            snakes[c] = new SnakeDown(lines, columns, jones);
+                            snakes[c].line = 1;
+                            snakes[c].column = (int) (Math.random() * 47);
+                            ;
+                        }
+                        c++;
+                    }
+                }
+                if (timegone >= 730 && timegone <= 760) {
+                    gameView.addTextToCanvas("If you survived that long, you desserve to win", 190, 50, 22, Color.white, 0);
+                }
+                if (boss.lifes == 0) {
+                    indianaJones.jonesWon = true;
+                    this.gameOver = true;
+                    stop = false;
+                    gameView.playSound("winsound.wav", false);
+                    String ending = "You beat the game. Congratulations!" + "\n".repeat(2) + "Thank you for playing my first game" + "\n".repeat(6) + "You can delete the checkpoints.txt\nand start again!" + "\n\nPress ENTER to continue...";
+                    for (int i = 1; i < ending.length(); i++) {
+                        gameView.addTextToCanvas(ending.substring(0, i), 110, 50, 25, Color.white, 0);
+                        gameView.printCanvas();
+                        Thread.sleep(50);
+                    }
+                    while (!stop) {
+                        Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
+                        for (int keyCode : pressedKeys) {
+                            if (keyCode == KeyEvent.VK_ENTER) {
+
+                                stop = true;
+                            }
                         }
                     }
                 }
-            }
-            if (timegone % 5 == 0) {
-                Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
-                for (int keyCode : pressedKeys) {
-                    if (keyCode == KeyEvent.VK_UP) {
-                        bullets[c] = new BulletUp(jones.line, jones.column);
-                        gameView.playSound("laserShoot.wav",false);
-                        c++;
-                    } else if (keyCode == KeyEvent.VK_DOWN) {
-                        bullets[c] = new BulletDown(jones.line, jones.column);
-                        gameView.playSound("laserShoot.wav",false);
-                        c++;
-                    } else if (keyCode == KeyEvent.VK_LEFT) {
-                        bullets[c] = new BulletLeft(jones.line, jones.column);
-                        gameView.playSound("laserShoot.wav",false);
-                        c++;
-                    } else if (keyCode == KeyEvent.VK_RIGHT) {
-                        bullets[c] = new BulletRight(jones.line, jones.column);
-                        gameView.playSound("laserShoot.wav",false);
-                        c++;
+                if (timegone % 5 == 0) {
+                    Integer[] pressedKeys = gameView.getKeyCodesOfCurrentlyPressedKeys();
+                    for (int keyCode : pressedKeys) {
+                        if (keyCode == KeyEvent.VK_UP) {
+                            bullets[c] = new BulletUp(jones.line, jones.column);
+                            c++;
+                        } else if (keyCode == KeyEvent.VK_DOWN) {
+                            bullets[c] = new BulletDown(jones.line, jones.column);
+                            gameView.playSound("laserShoot.wav", false);
+                            c++;
+                        } else if (keyCode == KeyEvent.VK_LEFT) {
+                            bullets[c] = new BulletLeft(jones.line, jones.column);
+                            gameView.playSound("laserShoot.wav", false);
+                            c++;
+                        } else if (keyCode == KeyEvent.VK_RIGHT) {
+                            bullets[c] = new BulletRight(jones.line, jones.column);
+                            gameView.playSound("laserShoot.wav", false);
+                            c++;
+                        }
+                    }
+
+                }
+                for (GamePiece gamePiece : gamePieces) {
+                    gamePiece.move();
+                }
+                for (Bullet bullet : bullets) {
+                    if (bullet != null) {
+                        if (bullet.line > 0) {
+                            canvas.paint(bullet.line, bullet.column, bullet.display);
+                            if (boss.isOnBullet(bullet)) {
+                                boss.lifes--;
+                                bullet.line = -1;
+                            }
+                            bullet.move();
+                        }
+                        if (bullet.line == 0 || bullet.column == 0 || bullet.line == 26 || bullet.column == 46) {
+                            bullet.line = -1;
+                        }
                     }
                 }
-
-            }
-            for (GamePiece gamePiece : gamePieces) {
-                gamePiece.move();
-                canvas.paint(gamePiece.line, gamePiece.column, gamePiece.display);
-            }
-            for (Obstacle obstacle : obstacles) {
-                if (obstacle != null) {
-                    canvas.paint(obstacle.line, obstacle.column, obstacle.display);
+                for (Snake snake : snakes) {
+                    if (snake != null) {
+                        snake.moveHorizontal();
+                    }
                 }
+                escapeMenu();
+                delta = 0;
+                timegone++;
             }
+            this.canvas.fill(' ');
+
             for (Bullet bullet : bullets) {
                 if (bullet != null) {
                     if (bullet.line > 0) {
                         canvas.paint(bullet.line, bullet.column, bullet.display);
-                        if (boss.isOnBullet(bullet)) {
-                            boss.lifes--;
-                            bullet.line = -1;
-                        }
-                        bullet.move();
-                    }
-                    if (bullet.line == 0 || bullet.column == 0 || bullet.line == 26 || bullet.column == 46) {
-                        bullet.line = -1;
                     }
                 }
             }
+            gameView.addTextToCanvas("Boss Health: " + boss.lifes, 730, 530, 19, Color.RED, 0);
+            printHearts();
             for (Snake snake : snakes) {
                 if (snake != null) {
                     canvas.paint(snake.line, snake.column, snake.display);
-                    snake.moveHorizontal();
                 }
+            }
+            gameLogic();
+            if (timegone >= 160 && timegone < 210) {
+                gameView.addTextToCanvas("\"You survived only the beginning!\"\n   " +
+                        "Now comes the real challenge", 180, 50, 22, Color.RED, 0);
+            }
+            if (timegone >= 330 && timegone <= 370) {
+                gameView.addTextToCanvas("\"Now you will face everything i have!\"", 150, 50, 22, Color.RED, 0);
+                gameView.addTextToCanvas("Powerup enabled!", 320, 500, 23, Color.white, 0);
+            }
+            if (timegone < 50) {
+                gameView.addTextToCanvas("\"You will never kill me!\"", 240, 50, 22, Color.RED, 0);
+            }
+            for (GamePiece gamePiece : gamePieces) {
+                canvas.paint(gamePiece.line, gamePiece.column, gamePiece.display);
             }
             canvas.paint(boss.line, boss.column, boss.display);
             gameView.print(canvas.asString(), 22);
-            gameLogic();
-            sleep(tickspeed);
-            timegone++;
+
+            time1 = System.currentTimeMillis();
+            delta = time1 - time + delta;
         }
         sleep(500);
         gameView.stopAllSounds();
