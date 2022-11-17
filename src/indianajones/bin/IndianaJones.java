@@ -326,7 +326,7 @@ public class IndianaJones {
             }
             //Level 1.4 / "The Shootout""
             else if (indianaJones.levelSelector == 15) {
-                screen.setWindowTitle("Indiana Jones Game - \"The Shootout\"");
+                screen.setWindowTitle("Indiana Jones Game - \"The Bossfight\"");
                 indianaJones.jonesWon = false;
                 while (!indianaJones.jonesWon && indianaJones.lifes > 0) {
                     GameLogic shootout = new GameLogic(lines, columns, tickspeed, 0, screen, indianaJones);
