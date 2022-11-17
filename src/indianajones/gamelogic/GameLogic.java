@@ -689,7 +689,7 @@ public class GameLogic {
 
     public void gameLoopGunFight() throws InterruptedException {
         Boss boss = new Boss(lines, columns, 13, 24, 100);
-        int timegone = 150;
+        int timegone = 0;
         snakes = new Snake[201];
         int c = 0;
         int wave1 = 0;
