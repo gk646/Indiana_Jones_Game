@@ -189,7 +189,7 @@ public class IndianaJones {
                 if (checkpointdata.contains(("You have reached Checkpoint 5!"))) {
                     indianaJones.checkpoint5 = true;
                 }
-
+                reader.close();
             }
         } else {
             String standartText = ("""
@@ -198,7 +198,7 @@ public class IndianaJones {
                     You have reached the following checkpoints:\s""");
             byte[] strToBytes = standartText.getBytes();
             Files.write(path, strToBytes);
-
+            
         }
 
         //Making Window
