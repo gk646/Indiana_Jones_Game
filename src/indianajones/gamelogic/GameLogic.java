@@ -22,7 +22,6 @@ public class GameLogic {
     private final GamePiece[] gamePieces;
     public Grail grail;
     public Exit exit;
-    private final int numberOfSnakes;
     public Snake snake;
     public boolean gameOver;
     public Random random;
@@ -33,7 +32,6 @@ public class GameLogic {
         this.indianaJones = indianaJones;
         this.canvas = new Canvas(lines, columns);
         obstacles = new Obstacle[lines * columns];
-        this.numberOfSnakes = numberOfSnakes;
         this.random = new Random(seed);
         this.gameView = gameView;
         this.seed = 0;
@@ -1256,7 +1254,6 @@ public class GameLogic {
             }
             canvas.paint(boss.line, boss.column, boss.display);
             gameView.print(canvas.asString(), 22);
-
             time1 = System.currentTimeMillis();
             delta = time1 - time + delta;
         }
